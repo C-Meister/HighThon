@@ -208,7 +208,6 @@ int main(void) {
 		RenderTextureXYWH(renderer,outimage, 0, 0, Display_X, Display_Y);
 
 
-		
 		TTF_DrawText(renderer, user_name, Point(70, 30), font, white_color);           //내이름
 		TTF_DrawText(renderer, enemy_name, Point(1750, 30), font, white_color);   //적이름
 		SDL_RenderPresent(renderer);
