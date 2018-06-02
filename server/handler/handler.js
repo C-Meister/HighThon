@@ -24,7 +24,6 @@ handler.handler = function(client){
     client.on('data', function(data){
         data = iconv.decode(data, 'euc-kr');
         data = data.toString();
-        
         for(var list of listners){
             if (data.indexOf(list.event) === 0){
                 list.callback(data.split(list.event + ' ')[1], client);

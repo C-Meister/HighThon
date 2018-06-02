@@ -1,6 +1,8 @@
 var net = require('net');
 var connection_id = 0;
 var room_queue = require('./handler/room_queue');
+var game = require('./handler/game');
+
 global.iconv = require('iconv-lite');
 var handler = require('./handler/handler');
 /**
@@ -13,14 +15,24 @@ global.toHangul = function(str){
 };
 handler.addListener(room_queue.push);
 handler.addListener(room_queue.pop);
+handler.addListener(game.join);
+
 var server = net.createServer(function (client){
     client.id = connection_id++;
     console.log('client connected');
     client.write(toHangul('한글'));
+    client.status = 0;
     handler.handler(client);  
 
     client.on('close', function(err){
-        room_queue.pop.callback('', client);
+        switch(client.status){
+            case 1:
+            room_queue.pop.callback('', client);
+            break;
+            case 2:
+            game.onExit(client);
+            break;
+        }
     });
     client.on('error', function(err){
    //     room_queue.pop.callback('', client);

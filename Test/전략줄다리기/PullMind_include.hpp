@@ -44,9 +44,6 @@ using namespace std;
 typedef vector<SDL_Point> VecP;
 
 extern queue<int> idQ;
-
-void PrintPoint(SDL_Point p, string str="") {
-	cout << str<<"	x: " << p.x << ", " << "y: " << p.y << endl;
 bool compPoint(SDL_Point p1, SDL_Point p2) {
 
 	return p1.x == p2.x&&p1.y == p2.y;
