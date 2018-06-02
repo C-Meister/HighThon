@@ -98,8 +98,8 @@ int main(void) {
 	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
 
 
-	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
-	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
+	SDL_Texture *lobiimage = IMG_LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
+	SDL_Texture *inputimage = IMG_LoadTexture(renderer, ".\\resources\\image\\input.png");
 	if (lobiimage == NULL)
 		printf("");
 
