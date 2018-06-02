@@ -78,6 +78,8 @@ void printStatus();
 TTF_Font * Font_Size[100];
 TTF_Font * Font_Size2[100];
 
+
+
 void HitMind_TTF_Init();
 void HitMind_TTF_Close();
 void HitMind_TTF2_Init();
@@ -86,6 +88,7 @@ void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx,
 int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m);
 SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color);
+void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color);
 int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, Uint16* sentence, int x, int y, SDL_Color Color) {
 	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
@@ -278,6 +281,8 @@ public:
 	bool Callback(SDL_Event event) {
 
 		//spread();
+
+		
 		
 		if (type == ENTITY_BG|| type== ENTITY_ENDROPE )
 			return false;
@@ -442,6 +447,19 @@ public:
 		}
 	}
 
+	void drawInfo() {
+		TTF_Init();
+		TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 19);
+		string str1 = "ID: " + to_string(this->id);
+		string str2 = "Power: " + to_string(this->power);
+		SDL_Color color = { 0,0,0,255 };
+		SDL_Rect area = Rect(670, 15,180,80);
+
+		SDL_RenderDrawRect(renderer, &area);
+		TTF_DrawTextUnicode(renderer, str1, Point(680, 20), font, color);
+		TTF_DrawTextUnicode(renderer, str2, Point(680, 40), font, color);
+
+	}
 
 };
 void printStatus() {
@@ -617,4 +635,22 @@ void getPoints(VecP& v, SDL_Point p1, SDL_Point p2)
 
 }
 
+
+void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
+	Uint16 text2[50];
+	han2unicode(text.c_str(), text2);
+	SDL_Surface * surface = TTF_RenderUNICODE_Blended(font, text2, color);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_Rect src;
+	src.x = 0;
+	src.y = 0;
+	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
+	SDL_Rect dst;
+	dst.x = point.x;
+	dst.y = point.y;
+	dst.w = src.w;
+	dst.h = src.h;
+	SDL_RenderCopy(renderer, texture, &src, &dst);
+}
 
