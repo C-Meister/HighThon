@@ -463,6 +463,10 @@ void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
 	char sendQuery[64] = "";
 	// 7 ~ 21 22 ~ 36
+	if (id - 6 <= 8)
+		id += 22;
+	else
+		id += 7;
 	sprintf(sendQuery, "move %d %d,%d %d,%d", id, p1.x, p1.y, p2.x, p2.y);
 	send(server, sendQuery, strlen(sendQuery), 0);
 }
