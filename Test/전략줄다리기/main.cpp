@@ -1,6 +1,10 @@
-﻿#include "SDL/SDL.h"
+﻿
+#define _CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
+
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
@@ -54,7 +58,7 @@ void ReceiveHandler(void) {
 			msg[1] = 'o';
 			msg[2] = 'i';
 			msg[3] = 'n';
-			send(server, msg, strlen(msg), 0);
+			send(server, msg, (int)strlen(msg), 0);
 		}
 		else if (strstr(msg, "exitroom") != NULL) {
 			event.user.code = EXITING;
@@ -119,7 +123,7 @@ int main(void) {
 				user_name = str;
 				fquit = true;
 				loading = true;
-			}
+			} 
 			break;
 		case SDL_TEXTINPUT:
 			str += event.text.text;

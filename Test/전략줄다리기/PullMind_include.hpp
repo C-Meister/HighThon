@@ -1,6 +1,4 @@
 ﻿#pragma once
-
-
 #include <stdio.h>				//Standard Input/Output
 #include <stdlib.h>				//malloc ???
 #include <math.h>				//???? ???? ???
@@ -147,10 +145,10 @@ void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx,
 	SDL_Rect Src = {0};// 직사각형 선언
 	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
 	SDL_Rect Dst;
-	Dst.x = round(xx);//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
-	Dst.y = round(yy);//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
-	Dst.w = round(ww);//매개변수w를 직사각형의 너비에 대입
-	Dst.h = round(hh);//매개변수h를 직사각형의 높이에 대입
+	Dst.x = (int)round(xx);//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = (int)round(yy);//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = (int)round(ww);//매개변수w를 직사각형의 너비에 대입
+	Dst.h = (int)round(hh);//매개변수h를 직사각형의 높이에 대입
 	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
 	return;
 }
