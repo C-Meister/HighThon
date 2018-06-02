@@ -139,7 +139,7 @@ int main(void) {
 
 		switch (event.type) {
 		case SDL_USEREVENT:
-			if (event.user.code = SOCKET_EVENT) {
+			if (event.user.code == SOCKET_EVENT) {
 				if (event.user.type == MATCHING) {
 					printf("%s", event.user.data1);
 					//enemy_name = string((char *)event.user.data1);
