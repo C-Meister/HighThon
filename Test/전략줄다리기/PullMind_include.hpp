@@ -118,6 +118,7 @@ void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
 void moveEntity(int id, SDL_Point p1, SDL_Point p2);
+void sendEntity(int id, SDL_Point p1, SDL_Point p2);
 void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
 
 	SDL_Color Color = { r,g,b,0 };
