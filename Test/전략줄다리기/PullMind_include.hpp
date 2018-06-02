@@ -65,7 +65,7 @@ public:
 	bool team;
 
 	
-
+	
 
 	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
 		this->power = power;
@@ -92,6 +92,7 @@ public:
 
 			}
 		}
+		
 	}
 
 
