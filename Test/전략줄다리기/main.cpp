@@ -14,9 +14,9 @@ queue<int> idQ;
 
 /*
 void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
-	char *text2;
+	Uint16 text2[50];
 	han2unicode(text.c_str(), text2);
-	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text2, color);
+	SDL_Surface * surface = TTF_RenderUNICODE_Blended(font, text2, color);
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_Rect src;
@@ -30,7 +30,7 @@ void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, T
 	dst.h = src.h;
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-*/
+
 string user_name;
 string enemy_name;
 void ReceiveHandler(void) {
@@ -174,15 +174,15 @@ int main(void) {
 		
 		string lodingS;
 		if (count % 4 == 0)
-			lodingS = "matching";
+			lodingS = "매칭중";
 		else if (count % 4 == 1)
-			lodingS = "matching .";
+			lodingS = "매칭중 .";
 		else if (count % 4 == 2)
-			lodingS = "matching . .";
+			lodingS = "매칭중 . .";
 		else if (count % 4 == 3)
-			lodingS = "matching . . .";
+			lodingS = "매칭중 . . .";
 
-		TTF_DrawText(renderer,  lodingS, Point(820, 550), font, color);
+		TTF_DrawTextUnicode(renderer, lodingS, Point(860, 550), font, color);
 		SDL_RenderPresent(renderer);
 		count++;
 	}
@@ -205,8 +205,8 @@ int main(void) {
 
 
 		
-		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
-		TTF_DrawText(renderer, enemy_name, Point(820, 550), font, color);
+		TTF_DrawTextUnicode(renderer, user_name, Point(520, 550), font, color);
+		TTF_DrawTextUnicode(renderer, enemy_name, Point(820, 550), font, color);
 		SDL_RenderPresent(renderer);
 		count++;
 	}
