@@ -370,7 +370,7 @@ public:
 			SDL_Rect area = Rect(x, y, xsz, ysz);
 			
 			for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-				if ((*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
+				if ((*it)->flag==false&&(*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
 					(*it)->focused = true;
 				}
 			}

@@ -58,6 +58,11 @@ void ReceiveHandler(void) {
 				else {
 					e_num += 7;
 				}
+
+				p1.x = 1920 - p1.x;
+				p2.x = 1920 - p2.x;
+
+
 			}
 			else
 				printf("My Turn\n");
