@@ -112,29 +112,6 @@ void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font
 	dst.h = src.h;
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
-{
-	if (m == 1)
-		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
-	else if (m == 2)
-		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
-
-
-		IMG_Quit();// IMG 종료
-		return nullptr;// 널포인터 반환
-	}
-	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
-	SDL_FreeSurface(Surface);// 서피스 메모리해제
-
-	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
-
-		IMG_Quit();// IMG 종료
-		return nullptr;// 널포인터 반환
-	}
-	IMG_Quit();// IMG 종료
-	return Texture;// Texture포인터 반환
-}
 
 void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
 
