@@ -1,7 +1,7 @@
 #include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
-
+#include "main2.h"
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
@@ -20,7 +20,6 @@ int main(void) {
 
 	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
 
-	
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100,100, 100,100),Rect(100,100,100,100), 1, 1, 1);

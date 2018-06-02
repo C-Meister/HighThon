@@ -18,8 +18,14 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="HitMind_Graphic.cpp">
+    <ClCompile Include="socket.c">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HitMind_Graphic.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="main2.h">
+      <Filter>헤더 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
