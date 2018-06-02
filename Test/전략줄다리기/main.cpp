@@ -210,7 +210,7 @@ int main(void) {
 
 
 		
-		TTF_DrawTextUnicode(renderer, user_name, Point(520, 550), font, color);
+		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
 		TTF_DrawTextUnicode(renderer, enemy_name, Point(820, 550), font, color);
 		SDL_RenderPresent(renderer);
 		count++;
