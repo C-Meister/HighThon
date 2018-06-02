@@ -322,7 +322,7 @@ public:
 			case ENTITY_PLAYER:
 				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) /*&& team != ENEMY*/) {
 					this->focused = true;
-					cout << "id: " <<id << endl;
+					//cout << "id: " <<id << endl;
 					cancelfocus();
 					return true;
 				}
@@ -390,6 +390,7 @@ public:
 			}
 		}
 		R_status = getStatus();
+		printStatus();
 	}
 
 	void addPlayer() {
@@ -400,6 +401,7 @@ public:
 			}
 		}
 		R_status = getStatus();
+		printStatus();
 	}
 	void cancelfocus() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
@@ -475,7 +477,7 @@ vector<int> getStatus() {
 
 void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 	Entity * e = map_enti.find(id)->second;
-	getPoints(e->v, e->center, p2);
+	getPoints(e->v, p1, p2);
 	e->angle = getAngle(e->center, p2);
 	if (e->team == ENEMY)
 		e->angle += 180;

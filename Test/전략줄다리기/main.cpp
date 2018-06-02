@@ -53,10 +53,10 @@ void ReceiveHandler(void) {
 			if (buffint != my_idx) {
 				printf("Ememy Turn\n");
 				if (e_num - 6 <= 8) {
-					e_num += 15;
+					e_num = 36- e_num;
 				}
 				else {
-					e_num = 39-e_num;
+					e_num = 51-e_num;
 				}
 
 				p1.x = 1920 - p1.x;
