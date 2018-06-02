@@ -75,6 +75,7 @@ void ReceiveHandler(void) {
 
 		}
 		SDL_PushEvent(&event);
+		memset(&event, 0, sizeof(event));
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
 	}
@@ -159,9 +160,10 @@ int main(void) {
 
 		switch (event.type) {
 		case SDL_USEREVENT:
+			printf("userevent : %d\n", event.user.type);
 			if (event.user.code == SOCKET_EVENT) {
 				if (event.user.type == MATCHING) {
-					printf("%s", event.user.data1);
+					printf("%s", (char *)event.user.data1);
 					//enemy_name = string((char *)event.user.data1);
 					cout << enemy_name << endl;
 					printf("match success\n");
@@ -231,30 +233,44 @@ int main(void) {
 #else
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
-
-	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
+//	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
+	
+	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 1280, 720, SDL_WINDOW_SHOWN);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+	Entity *Line[5], *entity[15], *enemies[15];
+	
+	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 160, 700, 20), Rect(290, 160, 700, 100), 1, 0, false, ENTITY_ROPE);
+	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 260, 700, 20), Rect(290, 260, 700, 100), 2, 0, false, ENTITY_ROPE);
+	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(290, 360, 700, 20), Rect(290, 360, 700, 100), 3, 0, false, ENTITY_ROPE);
+	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 460, 700, 20), Rect(290, 460, 700, 100), 4, 0, false, ENTITY_ROPE);
+	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 560, 700, 20), Rect(290, 560, 700, 100), 5, 0, false, ENTITY_ROPE);
 
-	Entity *BG = new Entity(renderer, "./resources/image/porg.jpg", Rect(0, 0, 640, 480), Rect(0, 0, 640, 480), 4, 0, false, ENTITY_BG);
 
-	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100, 100, 100, 100), Rect(100, 100, 100, 100), 1, 1, 1);
-	Entity *entity2 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 100, 100, 100), Rect(300, 100, 100, 100), 2, 1, 1);
-	Entity *entity3 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 300, 100, 100), Rect(300, 300, 100, 100), 3, 1, 1);
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 8-i; j++) {
+			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (50 * i), 25 + (50 * j), 50, 50), Rect(25 + (50 * i), 25 + (50 * j), 50, 50), i*8+j+6, 1, ALLY, ENTITY_PLAYER);
+		}
+	}
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 8 - i; j++) {
+			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (50 * i), 25 + (50 * j), 50, 50), Rect(25 + (50 * i), 25 + (50 * j), 50, 50), i * 8 + j + 21, 1, ALLY, ENTITY_PLAYER);
+		}
+	}
 
 
-	BG->RenderEntity();
-	entity->RenderEntity();
-	entity2->RenderEntity();
-	entity3->RenderEntity();
-
+	int prev=NULL;
+	
 	SDL_RenderPresent(renderer);
 	bool quit = false;
+	bool dup = false;
 	SDL_Event event;
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	while (!quit) {
 		SDL_WaitEventTimeout(&event, 10);
+	
+
 		SDL_RenderClear(renderer);
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
@@ -269,6 +285,7 @@ int main(void) {
 			Entity * entity = map_enti.find(id)->second;
 			if (entity->v.empty()) {
 				entity->flag = false;
+				entity->addPlayer();
 			}
 			else {
 				SDL_Point p = entity->v.back(); entity->v.pop_back();
@@ -277,12 +294,11 @@ int main(void) {
 			}
 			entity->RenderEntity();
 		}
-
-
-
+		
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-			if ((*it)->Callback(event)) { break; }
-
+			if ((*it)->Callback(event)) {
+				break; 
+			}
 		}
 		SDL_RenderPresent(renderer);
 	}
