@@ -59,6 +59,8 @@ extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
 extern vector<int> R_status;
+extern SDL_Point drag_first;
+
 
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
@@ -305,6 +307,10 @@ public:
 
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_LEFT) {
+				drag_first = Point(event.button.x, event.button.y);
+				
+			}
 			//	cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
@@ -315,6 +321,8 @@ public:
 					return true;
 				}
 				else if (event.button.button == SDL_BUTTON_RIGHT && focused) {
+					if (point2.y < 120)
+						return false;
 				/*	getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
@@ -336,6 +344,32 @@ public:
 				break;
 
 			}
+		case SDL_MOUSEBUTTONUP:
+			int x, y, xsz, ysz;
+			if (drag_first.x > event.button.x) {
+				x = event.button.x;
+				xsz = drag_first.x - event.button.x;
+			}
+			else {
+				x = drag_first.x;
+				xsz = event.button.x - drag_first.x;
+			}
+			if (drag_first.y > event.button.y) {
+				y = event.button.y;
+				ysz = drag_first.y - event.button.y;
+			}
+			else {
+				y = drag_first.y;
+				ysz = event.button.y - drag_first.y;
+			}
+			SDL_Rect area = Rect(x, y, xsz, ysz);
+			
+			for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+				if ((*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
+					(*it)->focused = true;
+				}
+			}
+
 		}
 		return false;
 	}
@@ -366,6 +400,17 @@ public:
 			if ((*it)->type == ENTITY_PLAYER && (*it)->focused && (*it)->id != this->id)
 				(*it)->focused = false;
 		}
+	}
+
+	void drawFocus() {
+		SDL_SetRenderDrawColor(renderer, 60, 120, 120, 255);
+		for (int i = 0; i < 72; i++) {
+			float x = cos((i * 5)*(M_PI / 180))*40 + center.x;
+			float y = sin((i * 5)*(M_PI / 180))*40 + center.y;
+			SDL_Rect rect = Rect(x, y, 5, 5);
+			SDL_RenderFillRect(this->renderer, &rect);
+		}
+		
 	}
 
 };

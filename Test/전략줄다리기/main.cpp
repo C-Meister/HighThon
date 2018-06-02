@@ -10,6 +10,7 @@
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 vector<int> R_status(5);
+SDL_Point drag_first = Point(-1, -1);
 
 queue<int> idQ;
 
@@ -228,14 +229,9 @@ int main(void) {
 	int start = clock();
 	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
-	
-		switch (event.type) {
-		case SDL_QUIT:
-			matching_end();
-			gamings = false;
-			break;
-		}
+
 		SDL_RenderClear(renderer);
+
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->Callback(event)) {
 				break;
@@ -243,36 +239,73 @@ int main(void) {
 		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
-			if (!is30||(entity->flag == false && entity->type!=ENTITY_ENDROPE)) {
+			if (entity->focused)
+				entity->drawFocus();
+			if (entity->flag == false && entity->type != ENTITY_ENDROPE || !is30) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
 		}
-		if(is30){
-			int size = idQ.size();
-			for (int i = 0; i < size; i++) {
-				int id = idQ.front(); idQ.pop();
-				Entity * entity = map_enti.find(id)->second;
-				if (entity->v.empty()) {
-					entity->flag = false;
-					entity->addPlayer();
+		int size = idQ.size();
+		for (int i = 0; i < size; i++) {
+			int id = idQ.front(); idQ.pop();
+			Entity * entity = map_enti.find(id)->second;
+			if (entity->v.empty()) {
+				entity->flag = false;
+				entity->addPlayer();
+			}
+			else {
+				SDL_Point p = entity->v.back(); entity->v.pop_back();
+				entity->Animation(p);
+				idQ.push(id);
+			}
+			entity->RenderEntity();
+			entity->drawFocus();
+		}
+
+		switch (event.type) {
+		case SDL_QUIT:
+			matching_end();
+			gamings = false;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			drag_first = Point(event.button.x, event.button.y);
+			break;
+		case SDL_MOUSEMOTION:
+			if (drag_first.x != -1) {
+				printf("mouse motion %d %d\n", event.motion.x, event.motion.y);
+				int x, y, xsz, ysz;
+				if (drag_first.x > event.motion.x) {
+					x = event.motion.x;
+					xsz = drag_first.x - event.motion.x;
 				}
 				else {
-					SDL_Point p = entity->v.back(); entity->v.pop_back();
-					entity->Animation(p);
-					idQ.push(id);
+					x = drag_first.x;
+					xsz = event.motion.x - drag_first.x;
 				}
-				entity->RenderEntity();
+				if (drag_first.y > event.motion.y) {
+					y = event.motion.y;
+					ysz = drag_first.y - event.motion.y;
+				}
+				else {
+					y = drag_first.y;
+					ysz = event.motion.y - drag_first.y;
+				}
+				SDL_SetRenderDrawColor(renderer, 0, 10, 10, 30);
+				SDL_Rect area = Rect(x, y, xsz, ysz);
+				SDL_RenderDrawRect(renderer, &area);
 			}
+
+			break;
+		case SDL_MOUSEBUTTONUP:
+			SDL_Delay(1);
+			drag_first = Point(-1, -1);
+			break;
 		}
-		if (clock()-start >= limit * 1000) {
-			is30 = true;
-		}
-		else {
-			SDL_SetRenderDrawColor(renderer, timer_color.r, timer_color.g, timer_color.b, timer_color.a);
-			SDL_RenderFillRect(renderer, &Rect(timer.x, timer.y, timer.w*(1 - (clock() - start) / (limit * 1000)), timer.h));
-			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-		}
+		
+		
+		
+
 		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
 		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);			//적이름
 		SDL_RenderPresent(renderer);
