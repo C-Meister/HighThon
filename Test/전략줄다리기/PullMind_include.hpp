@@ -61,6 +61,7 @@ extern queue<int> idQ;
 extern vector<int> R_status;
 extern SDL_Point drag_first;
 
+extern int my_idx = 0;
 
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
@@ -464,11 +465,8 @@ void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
 	char sendQuery[64] = "";
 	// 7 ~ 21 22 ~ 36
-	if (id - 6 <= 8)
-		id += 22;
-	else
-		id += 7;
-	sprintf(sendQuery, "move %d %d,%d %d,%d", id, p1.x, p1.y, p2.x, p2.y);
+
+	sprintf(sendQuery, "move %d %d %d,%d %d,%d",my_idx, id, p1.x, p1.y, p2.x, p2.y);
 	send(server, sendQuery, strlen(sendQuery), 0);
 }
 double getAngle(SDL_Point p1, SDL_Point p2) {

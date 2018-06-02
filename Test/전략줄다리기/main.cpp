@@ -47,7 +47,18 @@ void ReceiveHandler(void) {
 
 		//printf("%s\n", msg);
 		if (msg[3] == 'e' && msg[2] == 'v') {
-			sscanf(msg, "move %d %d,%d %d,%d", &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+
+			sscanf(msg, "move %d %d %d,%d %d,%d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+			
+			if (buffint != my_idx) {
+				if (e_num - 7 <= 8) {
+					e_num += 22;
+				}
+				else {
+					e_num += 7;
+				}
+			}
+
 			moveEntity(e_num, p1, p2);
 		}
 		else if (strstr(msg, "match ") != NULL) {
@@ -68,6 +79,9 @@ void ReceiveHandler(void) {
 		else if (strstr(msg, "exitroom") != NULL) {
 			event.user.code = EXITING;
 
+		}
+		else if (strstr(msg, "join_success ") != NULL) {
+			sscanf(msg, "join_success %d", &my_idx);
 		}
 		SDL_PushEvent(&event);
 		memset(&event, 0, sizeof(event));
