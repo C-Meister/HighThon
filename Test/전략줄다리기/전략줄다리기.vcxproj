@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HitMindwithCver2.c" />
     <ClCompile Include="HitMind_Console.c" />
     <ClCompile Include="HitMind_Graphic.c" />
     <ClCompile Include="main.cpp" />
