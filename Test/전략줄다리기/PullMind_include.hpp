@@ -200,7 +200,7 @@ public:
 		}
 	}
 	void Animation(VecP v, int delay=0) {
-		for (auto it = v.begin(); it != v.end(); it++) {
+		for (auto it = v.begin(); it != v.end();     it++) {
 			moveRect(this->dst, (*it));
 			SDL_RenderClear(this->renderer);
 			RenderEntity();
