@@ -1,5 +1,6 @@
 var queuecnt = 0;
 var queuematch = [];
+var matchcnt = 0;
 
 module.exports = {
     push: {
@@ -15,9 +16,9 @@ module.exports = {
                 queuecnt -= 2;
                 var client_1 = queuematch.shift();
                 var client_2 = queuematch.shift();
-                client_1.client.write(toHangul(`match ${client_2.name}`));
-                client_2.client.write(toHangul(`match ${client_1.name}`));
-                
+                client_1.client.write(toHangul(`match ${client_2.name} & ${matchcnt}`));
+                client_2.client.write(toHangul(`match ${client_1.name} & ${matchcnt}`));
+                matchcnt++;
                 console.log(`match ${client_1.name} and ${client_2.name}`);
             }
         }
