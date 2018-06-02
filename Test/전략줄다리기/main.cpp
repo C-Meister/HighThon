@@ -69,8 +69,10 @@ int main(void) {
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_BACKSPACE && !str.empty())
 				str.pop_back();
-			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) {
+			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) { //엔터입력
 				matching_start(str.c_str());
+				quit = true;
+
 			}
 			break;
 		case SDL_TEXTINPUT:
@@ -92,6 +94,15 @@ int main(void) {
 
 	}
 
+	
+	bool gaming = false;
+	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
+
+	while (!gaming) {
+		RenderTextureXYWH(renderer, outimage, 0, 0, Display_X, Display_Y);
+
+		SDL_RenderPresent(renderer);
+	}
 	SDL_Quit();
 	return 0;
 
