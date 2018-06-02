@@ -56,6 +56,7 @@ void ReceiveHandler(void) {
 
 		}
 		SDL_PushEvent(&event);
+		memset(&event, 0, sizeof(event));
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
 	}
