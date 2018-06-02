@@ -492,7 +492,7 @@ void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
 	char sendQuery[64] = "";
 	// 7 ~ 21 22 ~ 36
 
-	sprintf(sendQuery, "move %d %d %d,%d %d,%d",my_idx, id, p1.x, p1.y, p2.x, p2.y);
+	sprintf(sendQuery, "move %1d %2d %4d,%4d %4d,%4d",my_idx, id, p1.x, p1.y, p2.x, p2.y);
 	send(server, sendQuery, strlen(sendQuery), 0);
 }
 double getAngle(SDL_Point p1, SDL_Point p2) {

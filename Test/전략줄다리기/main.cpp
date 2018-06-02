@@ -39,35 +39,30 @@ void ReceiveHandler(void) {
 	char msg[255] = "";
 	SDL_Event event = { 0 };
 	char buff[100] = "";
-	char * msbuff = msg;
 	SDL_Point p1, p2;
-	int e_num, i;
+	int e_num;
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
-	while (recv(server, msg, sizeof(msg), 0) > 0) {
-
+	while (recv(server, msg, 30, 0) > 0) {
+		printf("%s\n", msg);
 		//printf("%s\n", msg);
 		if (msg[3] == 'e' && msg[2] == 'v') {
-			while (*msbuff != 'e') {
-				sscanf(msbuff, "move %d %d %d,%d %d,%d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
 
-				if (buffint != my_idx) {
-					printf("Ememy Turn\n");
-					if (e_num - 7 <= 8) {
-						e_num += 22;
-					}
-					else {
-						e_num += 7;
-					}
+			sscanf(msg, "move %1d %2d %4d,%4d %4d,%4d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+			
+			if (buffint != my_idx) {
+				printf("Ememy Turn\n");
+				if (e_num - 7 <= 8) {
+					e_num += 22;
 				}
-				else
-					printf("My Turn\n");
-
-				moveEntity(e_num, p1, p2);
-				for (i = 5; msbuff[i] != 'm'; i++);
-				msbuff += i;
+				else {
+					e_num += 7;
+				}
 			}
-			msbuff = msg;
+			else
+				printf("My Turn\n");
+			
+			moveEntity(e_num, p1, p2);
 		}
 		else if (strstr(msg, "match ") != NULL) {
 			Sleep(1000);
@@ -150,7 +145,7 @@ int main(void) {
 				user_name = str;
 				fquit = true;
 				loading = true;
-			}
+			} 
 			break;
 		case SDL_TEXTINPUT:
 			str += event.text.text;
@@ -172,25 +167,25 @@ int main(void) {
 	}
 
 
-
+	
 	int count = 0;
 	while (loading) {
 		SDL_WaitEventTimeout(&event, 500);
-
+		
 		switch (event.type) {
 		case SDL_USEREVENT:
-			if (event.user.code == MATCHING) {
-				printf("match success\n");
-				loading = false;
-				gamings = true;
-				//EXITING 이벤트 처리	
-
-			}
-			else if (event.user.code == EXITING) {
-				gamings = false;
-				break;
-			}
-
+				if (event.user.code == MATCHING) {
+					printf("match success\n");
+					loading = false;
+					gamings= true;
+					//EXITING 이벤트 처리	
+						
+				}
+				else if (event.user.code == EXITING) {
+					gamings = false;
+					break;
+				}
+			
 			break;
 
 		case SDL_QUIT:
@@ -198,9 +193,9 @@ int main(void) {
 			loading = false;
 			break;
 		}
-
+		
 		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-
+		
 		string lodingS;
 		if (count % 4 == 0)
 			lodingS = "매칭중";
@@ -219,17 +214,17 @@ int main(void) {
 	Entity *Line[5], *entity[15], *enemies[15];
 
 	Entity *BG = new Entity(renderer, "./resources/image/out.jpg", Rect(0, 0, 1920, 1080), Rect(0, 0, 1920, 1080), 6, 0, false, ENTITY_BG);
-
+	
 	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 200, 900, 20), Rect(460, 200, 900, 100), 1, 0, false, ENTITY_ROPE);
 	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 386, 700, 20), Rect(560, 386, 700, 100), 2, 0, false, ENTITY_ROPE);
-	Line[2] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 540, 900, 20), Rect(460, 540, 900, 100), 3, 0, false, ENTITY_ROPE);
+	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(510, 540, 900, 20), Rect(460, 540, 900, 100), 3, 0, false, ENTITY_ROPE);
 	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
 	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
 
-
+	
 	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 8 - i; j++) {
-			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i * 8 + j + 7, 1, ALLY, ENTITY_PLAYER);
+		for (int j = 0; j < 8-i; j++) {
+			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
 		}
 	}
 	for (int i = 1; i >= 0; i--) {
@@ -239,13 +234,13 @@ int main(void) {
 	}
 
 
-	int prev = NULL;
-
+	int prev=NULL;
+	
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	bool dup = false;
 	double limit = 30;//초단위
-	SDL_Rect timer = Rect(30, 100, 1820, 8);
+	SDL_Rect timer = Rect(30,100, 1820, 8);
 	SDL_Color timer_color = { 255,255,0 ,0 };
 	int start = clock();
 	while (gamings) {
@@ -293,7 +288,7 @@ int main(void) {
 			SDL_RenderFillRect(renderer, &Rect(timer.x, timer.y, timer.w*(1 - (clock() - start) / (limit * 1000)), timer.h));
 			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		}
-
+		
 
 		switch (event.type) {
 		case SDL_QUIT:
@@ -305,7 +300,7 @@ int main(void) {
 			break;
 		case SDL_MOUSEMOTION:
 			if (drag_first.x != -1) {
-				//	printf("mouse motion %d %d\n", event.motion.x, event.motion.y);
+			//	printf("mouse motion %d %d\n", event.motion.x, event.motion.y);
 				int x, y, xsz, ysz;
 				if (drag_first.x > event.motion.x) {
 					x = event.motion.x;
@@ -334,7 +329,7 @@ int main(void) {
 			drag_first = Point(-1, -1);
 			break;
 		}
-
+		
 		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
 		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);			//적이름
 		SDL_RenderPresent(renderer);
