@@ -12,8 +12,8 @@ MAP_ENTI map_enti;
 queue<int> idQ;
 void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
 	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);// 서피스로부터 텍스쳐를 생성한다
-	SDL_FreeSurface(surface);//서피스 메모리를 해제 해준다.
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);// ���ǽ��κ��� �ؽ��ĸ� �����Ѵ�
+	SDL_FreeSurface(surface);//���ǽ� �޸𸮸� ���� ���ش�.
 	SDL_Rect src;
 	src.x = 0;
 	src.y = 0;
@@ -39,7 +39,6 @@ int main(void) {
 
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
 
-
 	int Display_X = 1920;
 	int Display_Y = 1080;
 	SDL_Window* window= SDL_CreateWindow("HitMind_2", 0,0, 1920,1080, SDL_WINDOW_SHOWN);
@@ -53,7 +52,7 @@ int main(void) {
 	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
 	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
 	if (lobiimage == NULL)
-		printf("이미지 못불러옴");
+		printf("�̹��� ���ҷ���");
 
 	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 	RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
@@ -63,6 +62,7 @@ int main(void) {
 
 		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 		RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
+
 		
 
 		switch (event.type) {
@@ -70,8 +70,7 @@ int main(void) {
 			if (event.key.keysym.sym == SDLK_BACKSPACE && !str.empty())
 				str.pop_back();
 			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) {
-				
-				
+			
 			}
 			break;
 		case SDL_TEXTINPUT:
