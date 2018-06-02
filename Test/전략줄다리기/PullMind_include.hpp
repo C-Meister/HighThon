@@ -9,7 +9,7 @@
 #include <signal.h>				//Interrupt?? ???
 #include <time.h>				//??? ???? ???
 #include <stdbool.h>			//Bool ??? ???
-#include <stdint.h>				//???? typedef ???? ??? ???
+#include <stdint.h>				//???? typedef ???? ??'
 #include <direct.h>				//???? ???? ???
 #include <WinInet.h>
 #include <iostream>
@@ -44,11 +44,6 @@ using namespace std;
 
 typedef vector<SDL_Point> VecP;
 
-bool compPoint(SDL_Point p1, SDL_Point p2) {
-	
-	return p1.x==p2.x&&p1.y==p2.y;
-
-}
 void PrintPoint(SDL_Point p, string str="") {
 	cout << str<<"	x: " << p.x << ", " << "y: " << p.y << endl;
 
@@ -145,10 +140,6 @@ void getPoints(VecP& v, SDL_Point p1, SDL_Point p2)
 			v.push_back(Point(x1, ndx));
 		}
 	}
-	if (!compPoint(v.front(), p1)) {
-		reverse(v.begin(), v.end());
-	}
-
 }
 class Entity {
 
@@ -196,7 +187,7 @@ public:
 				cout << "영역" << endl;
 				this->point = this->center;
 			}
-			else if (!compPoint(point,Point(-1,-1))) {
+			else if (!(this->point.x==-1&& this->point.y==-1)) {
 				cout << "영역바깥 그리고 -1,-1이 아님" << endl;
 				getPoints(v, this->point, point2);
 				Animation(v);//
