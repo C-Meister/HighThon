@@ -50,9 +50,6 @@ typedef map<int, Entity *> MAP_ENTI;
 extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
-<<<<<<< HEAD
-bool compPoint(SDL_Point p1, SDL_Point p2) {
-=======
 
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
@@ -111,12 +108,12 @@ public:
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
 			point2 = Point(event.button.x, event.button.y);
-			if (SDL_PointInRect(&point2, &this->reg)) { //¿µ¿ª¼±ÅÃ ½Ã
-				cout << "¿µ¿ª" << endl;
+			if (SDL_PointInRect(&point2, &this->reg)) { //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				cout << "ï¿½ï¿½ï¿½ï¿½" << endl;
 				this->point = this->center;
 			}
 			else if (!compPoint(point, Point(-1, -1))) {
-				cout << "¿µ¿ª¹Ù±ù ±×¸®°í -1,-1ÀÌ ¾Æ´Ô" << endl;
+				cout << "ï¿½ï¿½ï¿½ï¿½ï¿½Ù±ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ -1,-1ï¿½ï¿½ ï¿½Æ´ï¿½" << endl;
 				getPoints(v, this->point, point2);
 				reverse(v.begin(), v.end());
 				flag = true;
@@ -137,7 +134,6 @@ public:
 };
 
 
->>>>>>> 10c3ed1d6150d58ccf59ca643e354c3c827b544a
 
 
 void PrintPoint(SDL_Point p, string str = "") {
@@ -162,7 +158,7 @@ SDL_Rect Rect(int x, int y, int w, int h) {
 	SDL_Rect rect = { x,y,w,h };
 	return rect;
 }
-void moveRect(SDL_Rect& rect, SDL_Point point) {//point°¡ ÁßÁ¡ÁÂÇ¥
+void moveRect(SDL_Rect& rect, SDL_Point point) {//pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥
 	rect = { point.x - rect.w / 2,point.y - rect.h / 2,rect.w,rect.h };
 }
 SDL_Point Point(int x, int y) {
