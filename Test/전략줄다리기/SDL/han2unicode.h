@@ -1145,7 +1145,7 @@ static unsigned short convert_char_ksc5601_to_ucs2(unsigned char byte1, unsigned
 }
 
 
-static void han2unicode(char *src, Uint16 *dest)
+static void han2unicode(const char *src, Uint16 *dest)
 {
   while (*src) {
     if (*src > 0 && *src < 128) {
