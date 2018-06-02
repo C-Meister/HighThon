@@ -18,16 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="HitMind_Graphic.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HitMindwithCver2.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="socket.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HitMind_Console.c">
+    <ClCompile Include="HitMind_Graphic.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
