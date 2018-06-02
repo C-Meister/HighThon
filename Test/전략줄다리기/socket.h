@@ -8,7 +8,7 @@
 
 #define SOCKET_EVENT 7
 enum {
-	MATCHING, EXITING, MOVE
+	MATCHING=2, EXITING, MOVE
 };
 
 SOCKET server;
@@ -51,7 +51,7 @@ int connectServer() {
 void matching_start(const char * str) {
 	char string[128] = "";
 	sprintf(string, "queue %s", str);
-	send(server, string, strlen(string), 0);
+	send(server, string, (int)strlen(string), 0);
 	status = 1;
 }
 
@@ -63,6 +63,6 @@ void matching_end() {
 void join_room(int roomcnt) {
 	char string[64] = "";
 	sprintf(string, "join %d", roomcnt);
-	send(server, string, strlen(string), 0);
+	send(server, string, (int)strlen(string), 0);
 	status = 2;
 }

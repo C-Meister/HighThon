@@ -28,8 +28,8 @@ module.exports = {
                 client_2.inroom = roomcnt; */
                 var client_1 = queuematch.shift();
                 var client_2 = queuematch.shift();
-                client_1.client.write(toHangul(`match ${client_2.name}`));
-                client_2.client.write(toHangul(`match ${client_1.name}`));
+                client_1.client.write(`match ${client_2.name}`);
+                client_2.client.write(`match ${client_1.name}`);
                 client_1.client.write(`room ${roomcnt}`);
                 client_2.client.write(`room ${roomcnt}`);
                 console.log(`match ${client_1.name} and ${client_2.name}`);

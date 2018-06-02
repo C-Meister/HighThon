@@ -1,6 +1,10 @@
-﻿#include "SDL/SDL.h"
+﻿
+#define _CRT_SECURE_NO_WARNINGS
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
+
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
@@ -11,26 +15,12 @@ MAP_ENTI map_enti;
 vector<int> R_status(5);
 
 queue<int> idQ;
-void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
-	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-	SDL_Rect src;
-	src.x = 0;
-	src.y = 0;
-	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
-	SDL_Rect dst;
-	dst.x = point.x;
-	dst.y = point.y;
-	dst.w = src.w;
-	dst.h = src.h;
-	SDL_RenderCopy(renderer, texture, &src, &dst);
-}
-/*
+
+
 void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
-	char *text2;
+	Uint16 text2[50];
 	han2unicode(text.c_str(), text2);
-	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text2, color);
+	SDL_Surface * surface = TTF_RenderUNICODE_Blended(font, text2, color);
 	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 	SDL_FreeSurface(surface);
 	SDL_Rect src;
@@ -44,7 +34,7 @@ void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, T
 	dst.h = src.h;
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-*/
+
 string user_name;
 string enemy_name;
 void ReceiveHandler(void) {
@@ -53,14 +43,14 @@ void ReceiveHandler(void) {
 	char buff[100] = "";
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
-	event.user.code = SOCKET_EVENT;
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
 
 		printf("%s\n", msg);
 		if (strstr(msg, "match ") != NULL) {
 			Sleep(1000);
-			event.user.type = MATCHING;
+			event.user.code = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
+			enemy_name = string(buff);
 			event.user.data1 = buff;
 
 		}
@@ -69,14 +59,15 @@ void ReceiveHandler(void) {
 			msg[1] = 'o';
 			msg[2] = 'i';
 			msg[3] = 'n';
-			send(server, msg, strlen(msg), 0);
+			send(server, msg, (int)strlen(msg), 0);
 		}
 		else if (strstr(msg, "exitroom") != NULL) {
-			event.user.type = EXITING;
+			event.user.code = EXITING;
 
 		}
 		SDL_PushEvent(&event);
 		memset(&event, 0, sizeof(event));
+		event.type = SDL_USEREVENT;
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
 	}
@@ -93,7 +84,9 @@ int main(void) {
 	bool fquit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
+	SDL_Color white_color = { 255,0,0 ,0 };
 	TTF_Init();
+	SDL_Init(SDL_INIT_EVERYTHING);
 	HitMind_TTF_Init();
 	HitMind_TTF2_Init();
 
@@ -132,7 +125,7 @@ int main(void) {
 				user_name = str;
 				fquit = true;
 				loading = true;
-			}
+			} 
 			break;
 		case SDL_TEXTINPUT:
 			str += event.text.text;
@@ -158,25 +151,21 @@ int main(void) {
 	int count = 0;
 	while (loading) {
 		SDL_WaitEventTimeout(&event, 500);
-
+		
 		switch (event.type) {
 		case SDL_USEREVENT:
-			printf("userevent : %d\n", event.user.type);
-			if (event.user.code == SOCKET_EVENT) {
-				if (event.user.type == MATCHING) {
-					printf("%s", (char *)event.user.data1);
-					//enemy_name = string((char *)event.user.data1);
-					cout << enemy_name << endl;
+				if (event.user.code == MATCHING) {
 					printf("match success\n");
 					loading = false;
+					gamings= true;
 					//EXITING 이벤트 처리	
 						
 				}
-				else if (event.user.type == EXITING) {
+				else if (event.user.code == EXITING) {
 					gamings = false;
 					break;
 				}
-			}
+			
 			break;
 
 		case SDL_QUIT:
@@ -189,15 +178,15 @@ int main(void) {
 		
 		string lodingS;
 		if (count % 4 == 0)
-			lodingS = "matching";
+			lodingS = "매칭중";
 		else if (count % 4 == 1)
-			lodingS = "matching .";
+			lodingS = "매칭중 .";
 		else if (count % 4 == 2)
-			lodingS = "matching . .";
+			lodingS = "매칭중 . .";
 		else if (count % 4 == 3)
-			lodingS = "matching . . .";
+			lodingS = "매칭중 . . .";
 
-		TTF_DrawText(renderer,  lodingS, Point(820, 550), font, color);
+		TTF_DrawTextUnicode(renderer, lodingS, Point(860, 550), font, color);
 		SDL_RenderPresent(renderer);
 		count++;
 	}
@@ -216,16 +205,15 @@ int main(void) {
 			break;
 		}
 
-		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+		RenderTextureXYWH(renderer,outimage, 0, 0, Display_X, Display_Y);
 
 
-		
-		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
-		TTF_DrawText(renderer, enemy_name, Point(820, 550), font, color);
+		TTF_DrawText(renderer, user_name, Point(70, 30), font, white_color);           //내이름
+		TTF_DrawText(renderer, enemy_name, Point(1750, 30), font, white_color);   //적이름
 		SDL_RenderPresent(renderer);
 		count++;
 	}
-
+#else
 	SDL_Init(SDL_INIT_EVERYTHING);
 //	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
 #endif
@@ -302,6 +290,6 @@ int main(void) {
 
 
 
-
+#endif
 
 }

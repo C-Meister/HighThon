@@ -1,6 +1,4 @@
 ﻿#pragma once
-
-
 #include <stdio.h>				//Standard Input/Output
 #include <stdlib.h>				//malloc ???
 #include <math.h>				//???? ???? ???
@@ -62,7 +60,7 @@ extern vector<int> R_status;
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
 void PrintVecP(VecP v, string str);
-void PrintRect(SDL_Rect rect, string str );
+void PrintRect(SDL_Rect rect, string str);
 SDL_Rect Rect(int x, int y, int w, int h);
 void moveRect(SDL_Rect& rect, SDL_Point point);
 SDL_Point Point(int x, int y);
@@ -71,8 +69,178 @@ double getAngle(SDL_Point p1, SDL_Point p2);
 vector<int> getStatus();
 void printStatus();
 // 입력창 함수
+TTF_Font * Font_Size[100];
+TTF_Font * Font_Size2[100];
+
+void HitMind_TTF_Init();
+void HitMind_TTF_Close();
+void HitMind_TTF2_Init();
+void HitMind_TTF2_Close();
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m);
+SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color);
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, Uint16* sentence, int x, int y, SDL_Color Color) {
+	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+	SDL_Rect Src;
+	Src.x = 0;
+	Src.y = 0;
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+	SDL_Rect Dst;
+	Dst.x = x;
+	Dst.y = y;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return Src.w;// 출력할 문자열의 너비를 반환
+}
+void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
+	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_Rect src;
+	src.x = 0;
+	src.y = 0;
+	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
+	SDL_Rect dst;
+	dst.x = point.x;
+	dst.y = point.y;
+	dst.w = src.w;
+	dst.h = src.h;
+	SDL_RenderCopy(renderer, texture, &src, &dst);
+}
+int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
+{
+	if (m == 1)
+		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
+	else if (m == 2)
+		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
 
 
+		IMG_Quit();// IMG 종료
+		return nullptr;// 널포인터 반환
+	}
+	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
+	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
+	SDL_FreeSurface(Surface);// 서피스 메모리해제
+
+	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
+
+		IMG_Quit();// IMG 종료
+		return nullptr;// 널포인터 반환
+	}
+	IMG_Quit();// IMG 종료
+	return Texture;// Texture포인터 반환
+}
+
+void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
+
+	SDL_Color Color = { r,g,b,0 };
+	SDL_Surface * Surface = 0;
+	SDL_Texture* Texture = 0;
+	SDL_Rect Src;
+	SDL_Rect Dst;
+	Src.x = 0;
+	Src.y = 0;
+	while (1) {
+		if (m == 1)
+			Surface = TTF_RenderUTF8_Blended(Font_Size[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (m == 2)
+			Surface = TTF_RenderUTF8_Blended(Font_Size2[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+		if ((Src.w > w || Src.h > h) && size>1) {
+			size--;
+		}
+		else {
+			break;
+		}
+	}
+	Dst.x = x + w / 2.0 - Src.w / 2.0;
+	Dst.y = y + h / 2.0 - Src.h / 2.0;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return;	//평소에도 0을 리턴
+}
+void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, SDL_Color Color, int size, int m) {
+
+	SDL_Surface * Surface = 0;
+	SDL_Texture* Texture = 0;
+	SDL_Rect Src;
+	SDL_Rect Dst;
+	Src.x = 0;
+	Src.y = 0;
+	while (1) {
+		if (m == 1)
+			Surface = TTF_RenderUTF8_Blended(Font_Size[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (m == 2)
+			Surface = TTF_RenderUTF8_Blended(Font_Size2[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+		if ((Src.w > w || Src.h > h) && size>1) {
+			size--;
+		}
+		else {
+			break;
+		}
+	}
+	Dst.x = x + w / 2.0 - Src.w / 2.0;
+	Dst.y = y + h / 2.0 - Src.h / 2.0;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return;	//평소에도 0을 리턴
+}
+
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh) {//텍스쳐를 출력하는 함수 선언
+	SDL_Rect Src = {0};// 직사각형 선언
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+	SDL_Rect Dst;
+	Dst.x = (int)round(xx);//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = (int)round(yy);//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = (int)round(ww);//매개변수w를 직사각형의 너비에 대입
+	Dst.h = (int)round(hh);//매개변수h를 직사각형의 높이에 대입
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	return;
+}
+void HitMind_TTF_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size[i] = TTF_OpenFont(".\\font\\NanumGothic.ttf", i);
+	}
+}
+void HitMind_TTF_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size[i]);
+	}
+
+}
+void HitMind_TTF2_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size2[i] = TTF_OpenFont(".\\font\\NanumGothicBold.ttf", i);
+	}
+}
+void HitMind_TTF2_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size2[i]);
+	}
+
+}
 // --------------
 class Entity {
 
@@ -111,10 +279,10 @@ public:
 		map_enti.insert(make_pair(id, this));
 		RenderEntity();
 	}
-	
+
 
 	void RenderEntity() {
-		SDL_RenderCopyEx(renderer, img, &src, &dst, angle,NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, img, &src, &dst, angle, NULL, SDL_FLIP_NONE);
 	}
 	void PrintInfo() {
 		PrintPoint(this->center, "center");
@@ -149,15 +317,15 @@ public:
 				entity->RenderEntity();
 			}
 			RenderEntity();
-			
+
 		}
 
 		if (flag)
 			return false;
 
-		switch (event.type) { 
+		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
-		//	cout << (int)event.button.button<<endl;
+			//	cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
 			case ENTITY_PLAYER:
@@ -184,24 +352,24 @@ public:
 					this->focused = false;
 				}
 				break;
-		
+
 			}
 		}
 		return false;
 	}
 	void Animation(SDL_Point p) {
-			center = p;
-			moveRect(this->dst, center);
+		center = p;
+		moveRect(this->dst, center);
 	}
 	void removePlayer() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-			if ((*it)->type == ENTITY_ROPE&& !SDL_PointInRect(&point2, &(*it)->reg)) {
+			if ((*it)->type == ENTITY_ROPE && !SDL_PointInRect(&point2, &(*it)->reg)) {
 				(*it)->m_e.erase(id);
 			}
 		}
 		R_status = getStatus();
 	}
-	
+
 	void addPlayer() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->type == ENTITY_ROPE && SDL_PointInRect(&point2, &(*it)->reg)) {
@@ -218,7 +386,7 @@ public:
 		}
 	}
 
-}; 
+};
 void printStatus() {
 
 	vector<int>status = getStatus();
@@ -234,7 +402,7 @@ vector<int> getStatus() {
 			int sum = 0;
 			MAP_ENTI m_e = (*it)->m_e;
 			for (auto it2 = m_e.begin(); it2 != m_e.end(); it2++) {
-				if(it2->second->team==ENEMY)
+				if (it2->second->team == ENEMY)
 					sum -= (*it2).second->power;
 				else
 					sum += (*it2).second->power;
@@ -257,7 +425,7 @@ double getAngle(SDL_Point p1, SDL_Point p2) {
 	int dx = x2 - x1;
 	int dy = y2 - y1;
 
-	double rad = atan2(dy, dx );
+	double rad = atan2(dy, dx);
 	double degree = (rad * 180) / M_PI;
 
 	return degree;
