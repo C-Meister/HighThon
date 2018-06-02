@@ -22,7 +22,7 @@ handler.addListener = function (object){
  */
 handler.handler = function(client){
     client.on('data', function(data){
-        data = iconv.decode(data, 'euc-kr');
+    //    data = iconv.decode(data, 'euc-kr');
         data = data.toString();
         console.log(data);
         for(var list of listners){

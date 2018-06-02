@@ -50,6 +50,7 @@ void ReceiveHandler(void) {
 			Sleep(1000);
 			event.user.code = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
+			enemy_name = string(buff);
 			event.user.data1 = buff;
 
 		}
@@ -153,9 +154,6 @@ int main(void) {
 		switch (event.type) {
 		case SDL_USEREVENT:
 				if (event.user.code == MATCHING) {
-					printf("%s", (char *)event.user.data1);
-					enemy_name = string((char *)event.user.data1);
-					cout << enemy_name << endl;
 					printf("match success\n");
 					loading = false;
 					gamings= true;
