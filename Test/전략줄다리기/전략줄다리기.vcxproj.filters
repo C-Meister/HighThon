@@ -19,12 +19,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="socket.c">
-<<<<<<< HEAD
-=======
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="HitMind_Graphic.c">
->>>>>>> 493adeb589c93d841757f37f360e4f50ec865efa
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="HitMind_Graphic.c">
