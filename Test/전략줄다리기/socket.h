@@ -4,15 +4,18 @@
 #include <process.h>
 
 
-#define ErrorHandling(X) printf(X); return 0;
+#define ErrorHandling(X) printf(X)
 
 SOCKET server;
 
+int status = 0;
+char lastrecv[128] = "";
 
 void ReceiveHandler(void) {
 	char msg[255] = "";
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
-		printf("%s", msg);
+		printf("%s\n", msg);
+		strcpy(lastrecv, msg);
 	}
 }
 int connectServer(void) {
@@ -45,4 +48,23 @@ int connectServer(void) {
 
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
 	return 0;
+}
+
+void matching_start(char * str) {
+	char string[128] = "";
+	sprintf(string, "queue %s", str);
+	send(server, string, strlen(string), 0);
+	status = 1;
+}
+
+void matching_end() {
+	send(server, "dequeue", 7, 0);
+	status = 0;
+}
+
+void join_room(int roomcnt) {
+	char string[64] = "";
+	sprintf(string, "join %d", roomcnt);
+	send(server, string, strlen(string), 0);
+	status = 2;
 }
