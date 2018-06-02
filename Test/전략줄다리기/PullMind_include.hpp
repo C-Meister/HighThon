@@ -43,6 +43,10 @@ using namespace std;
 
 typedef vector<SDL_Point> VecP;
 
+extern queue<int> idQ;
+
+void PrintPoint(SDL_Point p, string str="") {
+	cout << str<<"	x: " << p.x << ", " << "y: " << p.y << endl;
 bool compPoint(SDL_Point p1, SDL_Point p2) {
 
 	return p1.x == p2.x&&p1.y == p2.y;
@@ -157,16 +161,19 @@ public:
 	SDL_Texture *img;
 	SDL_Renderer *renderer;
 	VecP v;
-	SDL_Point center, point = Point(-1, -1), point2;
+	SDL_Point center, point= Point(-1, -1),point2;
+	int id;
 	int power;
 	bool team;
+	bool flag = false;
+		
 
 
-
-	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
+	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
 		this->power = power;
 		this->renderer = renderer;
 		this->team = team;
+		this->id = id;
 		this->img = IMG_LoadTexture(renderer, filename.c_str());
 		this->dst = dst;
 		this->reg = reg;
@@ -186,6 +193,8 @@ public:
 		PrintRect(this->dst, "dst");
 	}
 	void Callback(SDL_Event event) {
+		if (flag)
+			return;
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
 			point2 = Point(event.button.x, event.button.y);
@@ -196,23 +205,23 @@ public:
 			else if (!compPoint(point, Point(-1, -1))) {
 				cout << "¿µ¿ª¹Ù±ù ±×¸®°í -1,-1ÀÌ ¾Æ´Ô" << endl;
 				getPoints(v, this->point, point2);
-				Animation(v);//
-				v.clear();
+				reverse(v.begin(), v.end());
+				idQ.push(id);
+				flag = true;
 				this->center = point2;
 				moveRect(this->reg, center);
 				this->point = Point(-1, -1);
 			}
 		}
 	}
-	void Animation(VecP v, int delay = 0) {
-		for (auto it = v.begin(); it != v.end(); it++) {
-			moveRect(this->dst, (*it));
+	void Animation(SDL_Point p) {
+		
+			moveRect(this->dst, p);
 			SDL_RenderClear(this->renderer);
 			RenderEntity();
 			SDL_RenderPresent(this->renderer);
-			SDL_Delay(delay);
-		}
 
+		
 	}
 
 
