@@ -68,7 +68,7 @@ int main(void) {
 	connectServer();
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
 	bool gaming = false;
-	bool quit = false;
+	bool fquit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	TTF_Init();
@@ -82,7 +82,7 @@ int main(void) {
 	SDL_Event event;
 	string str;
 	TTF_Init();
-	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 30);
+	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
 
 
 	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
@@ -92,7 +92,7 @@ int main(void) {
 
 	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 	RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
-	while (!quit) {
+	while (!fquit) {
 
 		SDL_WaitEvent(&event);
 
@@ -108,7 +108,7 @@ int main(void) {
 			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) { //엔터입력
 				matching_start(str.c_str());
 				user_name = str;
-				quit = true;
+				fquit = true;
 				gaming = true;
 			}
 			break;
@@ -120,24 +120,23 @@ int main(void) {
 		case SDL_QUIT:
 			if (status == 1)
 				matching_end();
-			quit = TRUE;
+			fquit = TRUE;
 			break;
 		default:
 			break;
 		}
 
-		TTF_DrawText(renderer, str, Point(720, 555), font, color);
+		TTF_DrawText(renderer, str, Point(720, 550), font, color);
 		SDL_RenderPresent(renderer);
 
 	}
 
 
-	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
-
-	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-
+	
+	int count = 0;
 	while (gaming) {
-		SDL_WaitEvent(&event);
+		SDL_WaitEventTimeout(&event, 500);
+
 		switch (event.type) {
 		case SDL_USEREVENT:
 			if (event.user.code = SOCKET_EVENT) {
@@ -154,10 +153,27 @@ int main(void) {
 			gaming = false;
 			break;
 		}
-		RenderTextureXYWH(renderer, outimage, 0, 0, Display_X, Display_Y);
+		
+		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+		
+		string lodingS;
+		if (count % 4 == 0)
+			lodingS = "matching";
+		else if (count % 4 == 1)
+			lodingS = "matching .";
+		else if (count % 4 == 2)
+			lodingS = "matching . .";
+		else if (count % 4 == 3)
+			lodingS = "matching . . .";
 
+		TTF_DrawText(renderer,  lodingS, Point(820, 550), font, color);
 		SDL_RenderPresent(renderer);
+		count++;
 	}
+
+	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
+	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+
 	SDL_Quit();
 	return 0;
 
