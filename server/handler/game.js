@@ -29,6 +29,7 @@ module.exports = {
                 client.write('access denied');
                 return;
             }
+            data = 'move ' + data;
             rooms[client.inroom][0].write(data);
             rooms[client.inroom][1].write(data);
         }

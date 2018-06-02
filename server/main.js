@@ -19,6 +19,7 @@ handler.addListener(game.join);
 handler.addListener(game.Move);
 
 var server = net.createServer(function (client){
+    
     client.id = connection_id++;
     console.log('client connected');
     client.write(toHangul('한글'));
