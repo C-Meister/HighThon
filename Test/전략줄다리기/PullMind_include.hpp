@@ -272,6 +272,9 @@ public:
 		PrintRect(this->dst, "dst");
 	}
 	bool Callback(SDL_Event event) {
+
+		//spread();
+		
 		if (type == ENTITY_BG|| type== ENTITY_ENDROPE )
 			return false;
 
@@ -313,12 +316,12 @@ public:
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
 			case ENTITY_PLAYER:
-				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg)) {
+				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) && !flag) {
 					this->focused = true;
 					cancelfocus();
 					return true;
 				}
-				else if (event.button.button == SDL_BUTTON_RIGHT && focused) {
+				else if (event.button.button == SDL_BUTTON_RIGHT && focused && !flag) {
 					if (point2.y < 120)
 						return false;
 					getPoints(v, this->center, point2);
@@ -409,6 +412,29 @@ public:
 		
 	}
 
+	void spread() {
+		VEC_ENTI overlap;
+		int i = 0;
+		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+			if ((*it)->type == ENTITY_PLAYER && SDL_PointInRect(&(*it)->center, &this->dst)) {
+				overlap.push_back((*it));
+			}
+		}
+
+		for (auto it = overlap.begin(); it != overlap.end(); it++, i++) {
+			int angle = ((overlap.size() - 2) * 180) / overlap.size();
+			float radian = (angle * M_PI / 180);
+			SDL_Point pt = Point((*it)->center.x, (*it)->center.y);
+			float x = cos(radian * i) * 1 + pt.x;
+			float y = sin(radian * i) * 1 + pt.y;
+			SDL_Point cpt = Point(x, y);
+			moveRect((*it)->dst, cpt);
+			moveRect((*it)->reg, cpt);
+			(*it)->center = cpt;
+		}
+	}
+
+
 };
 void printStatus() {
 
@@ -475,7 +501,7 @@ SDL_Rect Rect(int x, int y, int w, int h) {
 	SDL_Rect rect = { x,y,w,h };
 	return rect;
 }
-void moveRect(SDL_Rect& rect, SDL_Point point) {//point�� ������ǥ
+void moveRect(SDL_Rect& rect, SDL_Point point) { // point
 	rect = { point.x - rect.w / 2,point.y - rect.h / 2,rect.w,rect.h };
 }
 SDL_Point Point(int x, int y) {
