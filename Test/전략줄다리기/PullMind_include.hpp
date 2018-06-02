@@ -51,6 +51,8 @@ typedef vector<Entity *> VEC_ENTI;
 typedef map<int, Entity *> MAP_ENTI;
 
 
+
+
 extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
@@ -63,6 +65,8 @@ SDL_Rect Rect(int x, int y, int w, int h);
 void moveRect(SDL_Rect& rect, SDL_Point point);
 SDL_Point Point(int x, int y);
 void getPoints(VecP& v, SDL_Point p1, SDL_Point p2);
+
+
 
 
 class Entity {
