@@ -51,7 +51,6 @@ void ReceiveHandler(void) {
 			sscanf(msg, "move %1d %2d %4d,%4d %4d,%4d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
 			
 			if (buffint != my_idx) {
-				printf("Ememy Turn\n");
 				if (e_num - 6 <= 8) {
 					e_num = 36- e_num;
 				}
@@ -64,8 +63,6 @@ void ReceiveHandler(void) {
 
 
 			}
-			else
-				printf("My Turn\n");
 			printf("data : %d %d %d %d %d %d\n", buffint, e_num, p1.x, p1.y, p2.x, p2.y);
 			moveEntity(e_num, p1, p2);
 		}
