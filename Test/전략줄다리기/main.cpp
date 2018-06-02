@@ -12,16 +12,9 @@ queue<int> idQ;
 
 int main(void) {
 
-<<<<<<< HEAD
-
-	queue<int> idQ;
-	map<int, Entity> entities;
-	
-=======
 	
 	map<int, Entity *> entities;
 
->>>>>>> b8f7f668f878c1758445b39f454e95be3c638f6b
 	SDL_Init(SDL_INIT_EVERYTHING);
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
 
