@@ -328,7 +328,7 @@ public:
 				else if (event.button.button == SDL_BUTTON_RIGHT && focused && team != ENEMY) {
 					if (point2.y < 120)
 						return false;
-					getPoints(v, this->center, point2);
+					/*getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
 						angle += 180;
@@ -338,9 +338,9 @@ public:
 					moveRect(this->reg, center);
 					this->focused = false;
 					idQ.push(id);
-					removePlayer();
+					removePlayer();*/
 				//	moveEntity(id,center, point2);
-				//	sendEntity(id, center, point2);
+					sendEntity(id, center, point2);
 					return false;
 				}
 				else {
