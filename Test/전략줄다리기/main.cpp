@@ -2,12 +2,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "SDL/SDL.h"
-#include "socket.h"
 #include "PullMind_include.hpp"
 
 
-#pragma comment (lib, "ws2_32.lib")
-#pragma comment (lib , "lib/SDL2.lib")
 #undef main 
 
 VEC_ENTI vec_enti;
@@ -41,12 +38,18 @@ void ReceiveHandler(void) {
 	char msg[255] = "";
 	SDL_Event event = { 0 };
 	char buff[100] = "";
+	SDL_Point p1, p2;
+	int e_num;
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
 
-		printf("%s\n", msg);
-		if (strstr(msg, "match ") != NULL) {
+		//printf("%s\n", msg);
+		if (msg[3] == 'e' && msg[2] == 'v') {
+			sscanf(msg, "move %d %d,%d %d,%d", &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+			moveEntity(e_num, p1, p2);
+		}
+		else if (strstr(msg, "match ") != NULL) {
 			Sleep(1000);
 			event.user.code = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
@@ -80,6 +83,7 @@ int main(void) {
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
+	bool is30 = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	SDL_Color white_color = { 255,0,0 ,0 };
@@ -147,7 +151,8 @@ int main(void) {
 
 	
 	int count = 0;
-	while (loading) {
+	gamings = true;
+	while (!loading) {
 		SDL_WaitEventTimeout(&event, 500);
 		
 		switch (event.type) {
@@ -199,7 +204,7 @@ int main(void) {
 	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
 	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
 
-
+	
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 8-i; j++) {
 			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
@@ -217,7 +222,10 @@ int main(void) {
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	bool dup = false;
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	double limit = 30;//초단위
+	SDL_Rect timer = Rect(30,100, 1820, 8);
+	SDL_Color timer_color = { 255,255,0 ,0 };
+	int start = clock();
 	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
 	
@@ -235,28 +243,36 @@ int main(void) {
 		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
-			if (entity->flag == false && entity->type!=ENTITY_ENDROPE) {
+			if (!is30||(entity->flag == false && entity->type!=ENTITY_ENDROPE)) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
 		}
-		int size = idQ.size();
-		for (int i = 0; i < size; i++) {
-			int id = idQ.front(); idQ.pop();
-			Entity * entity = map_enti.find(id)->second;
-			if (entity->v.empty()) {
-				entity->flag = false;
-				entity->addPlayer();
+		if(is30){
+			int size = idQ.size();
+			for (int i = 0; i < size; i++) {
+				int id = idQ.front(); idQ.pop();
+				Entity * entity = map_enti.find(id)->second;
+				if (entity->v.empty()) {
+					entity->flag = false;
+					entity->addPlayer();
+				}
+				else {
+					SDL_Point p = entity->v.back(); entity->v.pop_back();
+					entity->Animation(p);
+					idQ.push(id);
+				}
+				entity->RenderEntity();
 			}
-			else {
-				SDL_Point p = entity->v.back(); entity->v.pop_back();
-				entity->Animation(p);
-				idQ.push(id);
-			}
-			entity->RenderEntity();
 		}
-		
-
+		if (clock()-start >= limit * 1000) {
+			is30 = true;
+		}
+		else {
+			SDL_SetRenderDrawColor(renderer, timer_color.r, timer_color.g, timer_color.b, timer_color.a);
+			SDL_RenderFillRect(renderer, &Rect(timer.x, timer.y, timer.w*(1 - (clock() - start) / (limit * 1000)), timer.h));
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		}
 		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
 		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);			//적이름
 		SDL_RenderPresent(renderer);

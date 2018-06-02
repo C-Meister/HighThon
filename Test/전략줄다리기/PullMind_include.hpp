@@ -21,6 +21,7 @@
 #include "SDL/SDL_ttf.h"		//SDL - ???(????) ???????
 #include "SDL/han2unicode.h"	//han2unicode - ?? 949 ?????? uniocde?? ?????
 #include "SDL/SDL_mixer.h"		//SDL - ???? ???????4
+#include "socket.h"
 
 #pragma comment (lib, "lib/libiconv.lib")
 #pragma comment (lib, "lib/SDL2")			//????? ??????? 1
@@ -30,6 +31,8 @@
 #pragma comment (lib, "lib/SDL2_mixer.lib")	//????? ???? ??????? 5
 #pragma comment (lib, "lib/libmysql.lib")	//MySQL ???????
 #pragma comment (lib, "wininet")
+#pragma comment (lib, "ws2_32.lib")
+#pragma comment (lib , "lib/SDL2.lib")
 
 
 using namespace std;
@@ -112,7 +115,7 @@ void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font
 	dst.h = src.h;
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-
+void moveEntity(int id, SDL_Point p1, SDL_Point p2);
 void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
 
 	SDL_Color Color = { r,g,b,0 };
@@ -312,7 +315,7 @@ public:
 					return true;
 				}
 				else if (event.button.button == SDL_BUTTON_RIGHT && focused) {
-					getPoints(v, this->center, point2);
+				/*	getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
 						angle += 180;
@@ -322,7 +325,9 @@ public:
 					moveRect(this->reg, center);
 					this->focused = false;
 					idQ.push(id);
-					removePlayer();
+					removePlayer();*/
+				//	moveEntity(id,center, point2);
+					sendEntity(id, center, point2);
 					return false;
 				}
 				else {
@@ -393,6 +398,29 @@ vector<int> getStatus() {
 	return v;
 }
 
+
+void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
+	Entity * e = map_enti.find(id)->second;
+	getPoints(e->v, e->center, p2);
+	e->angle = getAngle(e->center, p2);
+	if (e->team == ENEMY)
+		e->angle += 180;
+	reverse(e->v.begin(), e->v.end());
+	e->flag = true;
+	e->center = p2;
+	moveRect(e->reg, e->center);
+	e->focused = false;
+	idQ.push(id);
+	e->removePlayer();
+
+	return;
+}
+void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
+	char sendQuery[64] = "";
+	// 7 ~ 21 22 ~ 36
+	sprintf(sendQuery, "move %d %d,%d %d,%d", id, p1.x, p1.y, p2.x, p2.y);
+	send(server, sendQuery, strlen(sendQuery), 0);
+}
 double getAngle(SDL_Point p1, SDL_Point p2) {
 	int x1 = p1.x;
 	int y1 = p1.y;
