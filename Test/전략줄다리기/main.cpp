@@ -1,133 +1,213 @@
-#include "SDL/SDL.h"
+﻿#include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
-//#include "main2.h"
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
 #undef main 
-
+#define SOOHAN
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 
 queue<int> idQ;
+void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
+	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_Rect src;
+	src.x = 0;
+	src.y = 0;
+	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
+	SDL_Rect dst;
+	dst.x = point.x;
+	dst.y = point.y;
+	dst.w = src.w;
+	dst.h = src.h;
+	SDL_RenderCopy(renderer, texture, &src, &dst);
+}
+string user_name;
+string enemy_name;
+void ReceiveHandler(void) {
+	char msg[255] = "";
+	SDL_Event event = { 0 };
+	char buff[100] = "";
+	int buffint = 0;
+	event.type = SDL_USEREVENT;
+	event.user.code = SOCKET_EVENT;
+	while (recv(server, msg, sizeof(msg), 0) > 0) {
+
+		printf("%s\n", msg);
+		if (strstr(msg, "match ") != NULL) {
+			Sleep(1000);
+			event.user.type = MATCHING;
+			sscanf(msg, "match %[^n]s", buff);
+			event.user.data1 = buff;
+
+		}
+		else if (strstr(msg, "room ") != NULL) {
+			msg[0] = 'j';
+			msg[1] = 'o';
+			msg[2] = 'i';
+			msg[3] = 'n';
+			send(server, msg, strlen(msg), 0);
+		}
+		else if (strstr(msg, "exitroom") != NULL) {
+			event.user.type = EXITING;
+
+		}
+		SDL_PushEvent(&event);
+		memset(&event, 0, sizeof(event));
+		memset(msg, 0, sizeof(msg));
+		memset(buff, 0, sizeof(buff));
+	}
+}
 
 int main(void) {
 
 #ifdef SOOHAN
-	
-	bool quit = false;
-	SDL_Event event;
-	SDL_Renderer *renderer;
+
+	connectServer();
+	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
+	bool loading = false;
+	bool gamings = false;
+	bool fquit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	TTF_Init();
 	HitMind_TTF_Init();
 	HitMind_TTF2_Init();
 
-
-	int backspacehappen = false;
-	wchar_t change_password[5][256] = { L"", L"", L"", L"" };
-	int enter = false; // ���Ͱ� �ԷµǾ����� �˷��ִ� �� ����
-	int textinput = true; // ���ڰ� �ϳ� �� �ԷµǾ����� �˷��ִ� �� ����
-	int hangeul = false; // ���� �Է��ϰ� �ִ� ���ڰ� �ѱ����� �ƴ��� �ĺ����ִ� �� ����
-	int hanyeong = false; // �ѿ�Ű���¿� ���̴� �� ����
-	wchar_t wchar[2] = L""; // �ѱ��� �ѱ��� �Է¿� ���̴� �迭
-	int slice = 0;
-	wchar_t name_put[255] = L"";	//�̸� �Է� �迭
+	int Display_X = 1920;
+	int Display_Y = 1080;
+	SDL_Window* window = SDL_CreateWindow("HitMind_2", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN);
+	SDL_Renderer*	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	SDL_Event event;
+	string str;
+	TTF_Init();
+	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
 
 
-	Display_X = 1920;
-	Display_Y = 1080;
-	Window = SDL_CreateWindow("HitMind_2", 100, 100, Display_X, Display_Y, SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_FULLSCREEN_DESKTOP);
-	renderer = SDL_CreateRenderer(Window, -1, SDL_RENDERER_SOFTWARE);
-
-
-	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\maintema.png");
-	SDL_Texture *inputimage = LoadTexture(renderer, ".\\input.png");
+	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
+	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
+	if (lobiimage == NULL)
+		printf("");
 
 	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 	RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
-	while (!quit) {
+	while (!fquit) {
 
 		SDL_WaitEvent(&event);
 
 		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 		RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
-		switch (event.type)
-		{
-		case SDL_TEXTINPUT: // ä�� �Է� �̺�Ʈ
-							//	printf("��");
-			if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// �ѱ��� ���
-			{
-				wcscpy(wchar, L"");
-				int sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
-				wchar[0] = sum;
-				if (wcslen(name_put) < 255)
-					wcscat(name_put, wchar);
-				if (event.text.text[0] == -29)
-					slice = 1;
-				else
-					slice = 1 + !((wchar[0] - 0xac00) % 28);
-			}
-			else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// ���� �Է� ��
-				wcscpy(wchar, L"");
-				swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text ���ڿ� �׳� ������ѹ���
-				if (wcslen(name_put) < 255)
-					wcscat(name_put, wchar);
-				hangeul = false;
-				slice = 0;
-}
-			textinput = true;
-			break;
+
+
+
+		switch (event.type) {
 		case SDL_KEYDOWN:
-			//	printf("��2");
-			if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
-				if (hangeul == true && enter == false)
-					enter = true;
-				else {
-
-					printf("����");
-
-
-
-					enter = false;
-
-					//textinput = true;
-				}
+			if (event.key.keysym.sym == SDLK_BACKSPACE && !str.empty())
+				str.pop_back();
+			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) { //엔터입력
+				matching_start(str.c_str());
+				user_name = str;
+				fquit = true;
+				loading = true;
 			}
-			else if (event.key.keysym.sym == SDLK_TAB)
-			{
-				if (hangeul == true && enter == false)
-					enter = true;
-				else {
-
-				}
-			}
-			else if (event.key.keysym.sym == SDLK_RALT)
-				hanyeong = !(hanyeong);
-			else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(name_put) > 0)// Ű���� �齺���̽��� �迭�� ���̰� 1�̻��϶�
-			{
-				name_put[wcslen(name_put) - 1] = 0;
-				backspacehappen = true;
-			}
-			else {
-				hangeul = true;
-				slice++;
-			}
+			break;
+		case SDL_TEXTINPUT:
+			str += event.text.text;
+			//SDL_RenderClear(renderer);
+			cout << str << endl;
 			break;
 		case SDL_QUIT:
-			quit = true;
+			if (status == 1)
+				matching_end();
+			fquit = TRUE;
 			break;
-
+		default:
+			break;
 		}
-		PutText_Unicode(renderer, name_put, 720, 549, 40, color, 1);
+
+		TTF_DrawText(renderer, str, Point(720, 550), font, color);
 		SDL_RenderPresent(renderer);
+
 	}
 
+
+	
+	int count = 0;
+	while (loading) {
+		SDL_WaitEventTimeout(&event, 500);
+
+		switch (event.type) {
+		case SDL_USEREVENT:
+			if (event.user.code == SOCKET_EVENT) {
+				if (event.user.type == MATCHING) {
+					printf("%s", event.user.data1);
+					//enemy_name = string((char *)event.user.data1);
+					cout << enemy_name << endl;
+					printf("match success\n");
+					loading = false;
+					//EXITING 이벤트 처리	
+						
+				}
+				else if (event.user.type == EXITING) {
+					gamings = false;
+					break;
+				}
+			}
+			break;
+
+		case SDL_QUIT:
+			matching_end();
+			loading = false;
+			break;
+		}
+		
+		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+		
+		string lodingS;
+		if (count % 4 == 0)
+			lodingS = "matching";
+		else if (count % 4 == 1)
+			lodingS = "matching .";
+		else if (count % 4 == 2)
+			lodingS = "matching . .";
+		else if (count % 4 == 3)
+			lodingS = "matching . . .";
+
+		TTF_DrawText(renderer,  lodingS, Point(820, 550), font, color);
+		SDL_RenderPresent(renderer);
+		count++;
+	}
+
+	printf("탈출");
+
+	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
+	while (gamings) {
+		SDL_WaitEvent(&event);
+
+		switch (event.type) {
+		
+		case SDL_QUIT:
+			matching_end();
+			gamings = false;
+			break;
+		}
+
+		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+
+
+		
+		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
+		TTF_DrawText(renderer, enemy_name, Point(820, 550), font, color);
+		SDL_RenderPresent(renderer);
+		count++;
+	}
+
+	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+
 	SDL_Quit();
-	HitMind_TTF_Close();
-	HitMind_TTF2_Close();
 	return 0;
 
 #else
@@ -206,5 +286,5 @@ int main(void) {
 #endif
 
 
-	
+
 }

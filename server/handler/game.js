@@ -35,13 +35,13 @@ module.exports = {
     },
     onExit: function (client) {
         console.log(`close room${client.inroom}`);
-        if (rooms[client.inroom]) {
+
             if (rooms[client.inroom][0])
                 rooms[client.inroom][0].write('exitroom');
             if (rooms[client.inroom[1]])
                 rooms[client.inroom][1].write('exitroom');
 
             delete rooms[client.inroom];
-        }
+        
     }
 }
