@@ -51,7 +51,10 @@ void ReceiveHandler(void) {
 			msg[3] = 'n';
 			send(server, msg, strlen(msg), 0);
 		}
-		
+		else if (strstr(msg, "exitroom") != NULL) {
+			event.user.type = EXITING;
+
+		}
 		SDL_PushEvent(&event);
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
@@ -138,10 +141,12 @@ int main(void) {
 		case SDL_USEREVENT:
 			if (event.user.type == MATCHING) {
 				printf("match success\n");
-				while (1) {
-					Sleep(100);
-				}
+				//EXITING 이벤트 처리	
 			}
+			break;
+		case SDL_QUIT:
+			matching_end();
+			gaming = false;
 			break;
 		}
 		RenderTextureXYWH(renderer, outimage, 0, 0, Display_X, Display_Y);
