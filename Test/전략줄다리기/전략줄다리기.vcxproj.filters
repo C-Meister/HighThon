@@ -30,6 +30,9 @@
     <ClCompile Include="HitMind_Socket.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="HitMindwithCver2.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include.hpp">
