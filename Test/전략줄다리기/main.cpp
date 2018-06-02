@@ -217,7 +217,6 @@ int main(void) {
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	bool dup = false;
-	SDL_Event event;
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
