@@ -38,6 +38,7 @@ void ReceiveHandler(void) {
 
 		printf("%s\n", msg);
 		if (strstr(msg, "match ") != NULL) {
+			Sleep(1000);
 			event.user.type = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
 			event.user.data1 = buff;
