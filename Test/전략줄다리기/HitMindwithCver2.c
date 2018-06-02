@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
 	
 	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
 	Connect_status status;	//MySQL이 연결된 상태를 저장하는 구조체
-	MYSQL *cons = 0;		//MySQL선언
 	status.arg = cons;		//status에 mysql의 주소를 저장한다
 	status.ishappen = false;//연결이 안된 상태
 	SDL_Window * Window = NULL;		//SDL 관련
