@@ -9,7 +9,7 @@
 #include <signal.h>				//Interrupt?? ???
 #include <time.h>				//??? ???? ???
 #include <stdbool.h>			//Bool ??? ???
-#include <stdint.h>				//???? typedef ???? ??'
+#include <stdint.h>				//???? typedef ???? ??? ???
 #include <direct.h>				//???? ???? ???
 #include <WinInet.h>
 #include <iostream>
@@ -50,15 +50,22 @@ extern queue<int> idQ;
 
 void PrintPoint(SDL_Point p, string str="") {
 	cout << str<<"	x: " << p.x << ", " << "y: " << p.y << endl;
+bool compPoint(SDL_Point p1, SDL_Point p2) {
+
+	return p1.x == p2.x&&p1.y == p2.y;
 
 }
-void PrintVecP(VecP v,string str="") {
+void PrintPoint(SDL_Point p, string str = "") {
+	cout << str << "	x: " << p.x << ", " << "y: " << p.y << endl;
+
+}
+void PrintVecP(VecP v, string str = "") {
 	cout << str << endl;
 	for (auto it = v.begin(); it != v.end(); it++) {
 		PrintPoint(*it);
 	}
 }
-void PrintRect(SDL_Rect rect, string str="") {
+void PrintRect(SDL_Rect rect, string str = "") {
 	cout << str << "x: " << rect.x << ", " << "y: " << rect.y << "w: " << rect.w << ", " << "h: " << rect.h << endl;
 
 }
@@ -66,8 +73,8 @@ SDL_Rect Rect(int x, int y, int w, int h) {
 	SDL_Rect rect = { x,y,w,h };
 	return rect;
 }
-void moveRect(SDL_Rect& rect,SDL_Point point) {//point°¡ ÁßÁ¡ÁÂÇ¥
-	rect = { point.x-rect.w/2,point.y-rect.h/2,rect.w,rect.h };
+void moveRect(SDL_Rect& rect, SDL_Point point) {//point°¡ ÁßÁ¡ÁÂÇ¥
+	rect = { point.x - rect.w / 2,point.y - rect.h / 2,rect.w,rect.h };
 }
 SDL_Point Point(int x, int y) {
 	SDL_Point point = { x,y };
@@ -144,6 +151,10 @@ void getPoints(VecP& v, SDL_Point p1, SDL_Point p2)
 			v.push_back(Point(x1, ndx));
 		}
 	}
+	if (!compPoint(v.front(), p1)) {
+		reverse(v.begin(), v.end());
+	}
+
 }
 class Entity {
 
@@ -189,12 +200,12 @@ public:
 			return;
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
-			 point2 = Point(event.button.x, event.button.y);
+			point2 = Point(event.button.x, event.button.y);
 			if (SDL_PointInRect(&point2, &this->reg)) { //¿µ¿ª¼±ÅÃ ½Ã
 				cout << "¿µ¿ª" << endl;
 				this->point = this->center;
 			}
-			else if (!(this->point.x==-1&& this->point.y==-1)) {
+			else if (!compPoint(point, Point(-1, -1))) {
 				cout << "¿µ¿ª¹Ù±ù ±×¸®°í -1,-1ÀÌ ¾Æ´Ô" << endl;
 				getPoints(v, this->point, point2);
 				reverse(v.begin(), v.end());
