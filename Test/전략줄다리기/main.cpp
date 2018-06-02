@@ -14,16 +14,20 @@ queue<int> idQ;
 
 int main(void) {
 
+#ifdef SOOHAN
+
+
+#else
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
 
 	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
 
-	
+
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100,100, 100,100),Rect(100,100,100,100), 1, 1, 1);
+	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100, 100, 100, 100), Rect(100, 100, 100, 100), 1, 1, 1);
 	Entity *entity2 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 100, 100, 100), Rect(300, 100, 100, 100), 2, 1, 1);
 	Entity *entity3 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 300, 100, 100), Rect(300, 300, 100, 100), 3, 1, 1);
 
@@ -35,11 +39,11 @@ int main(void) {
 	bool quit = false;
 	SDL_Event event;
 	while (!quit) {
-		SDL_WaitEventTimeout(&event,10);
+		SDL_WaitEventTimeout(&event, 10);
 		SDL_RenderClear(renderer);
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
-			if(entity->flag==false) {
+			if (entity->flag == false) {
 				//애니메이션 중이 아님
 				entity->RenderEntity();
 			}
@@ -59,15 +63,17 @@ int main(void) {
 			entity->RenderEntity();
 		}
 
-	
-		
+
+
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->Callback(event)) { break; }
-				
+
 		}
 		SDL_RenderPresent(renderer);
 	}
-	
+
+#endif
+
 
 	
 }

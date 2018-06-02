@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="HitMind_Graphic.cpp" />
+    <ClCompile Include="HitMind_Graphic.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="socket.c" />
   </ItemGroup>
