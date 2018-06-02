@@ -12,7 +12,7 @@ vector<int> R_status(5);
 
 queue<int> idQ;
 
-/*
+
 void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
 	Uint16 text2[50];
 	han2unicode(text.c_str(), text2);
@@ -80,6 +80,7 @@ int main(void) {
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	TTF_Init();
+	SDL_Init(SDL_INIT_EVERYTHING);
 	HitMind_TTF_Init();
 	HitMind_TTF2_Init();
 

@@ -61,7 +61,7 @@ extern vector<int> R_status;
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
 void PrintVecP(VecP v, string str);
-void PrintRect(SDL_Rect rect, string str );
+void PrintRect(SDL_Rect rect, string str);
 SDL_Rect Rect(int x, int y, int w, int h);
 void moveRect(SDL_Rect& rect, SDL_Point point);
 SDL_Point Point(int x, int y);
@@ -132,8 +132,57 @@ SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스
 	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
 	SDL_FreeSurface(Surface);// 서피스 메모리해제
+
 	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
+
+		IMG_Quit();// IMG 종료
+		return nullptr;// 널포인터 반환
 	}
+	IMG_Quit();// IMG 종료
+	return Texture;// Texture포인터 반환
+}
+
+
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh) {//텍스쳐를 출력하는 함수 선언
+	SDL_Rect Src = {0};// 직사각형 선언
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); // Texture의 너비와 높이 정보를 Src.w, Src.h에 저장
+	SDL_Rect Dst;
+	Dst.x = round(xx);//매개변수x를 왼쪽위 꼭짓점의 x좌표에 대입
+	Dst.y = round(yy);//매개변수y를 왼쪽위 꼭짓점의 y좌표에 대입
+	Dst.w = round(ww);//매개변수w를 직사각형의 너비에 대입
+	Dst.h = round(hh);//매개변수h를 직사각형의 높이에 대입
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst);//Src의 정보를 가지고 있는 Texture를 Dst의 정보를 가진 Texture 로 변환하여 렌더러에 저장
+	return;
+}
+void HitMind_TTF_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size[i] = TTF_OpenFont(".\\font\\NanumGothic.ttf", i);
+	}
+}
+void HitMind_TTF_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size[i]);
+	}
+
+}
+void HitMind_TTF2_Init()
+{
+	for (int i = 0; i < 100; i++)
+	{
+		Font_Size2[i] = TTF_OpenFont(".\\font\\NanumGothicBold.ttf", i);
+	}
+}
+void HitMind_TTF2_Close() {
+
+	for (int i = 0; i < 100; i++)
+	{
+		TTF_CloseFont(Font_Size2[i]);
+	}
+
 }
 // --------------
 class Entity {
@@ -153,11 +202,11 @@ public:
 	bool focused = false;
 	int type;
 	double angle = 0;
-	
-		
 
 
-	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power = POWER_DEFAULT, bool team = TEAM_DEFAULT, int type = ENTITY_PLAYER) {
+
+
+	Entity(SDL_Renderer * renderer, string filename, SDL_Rect dst, SDL_Rect reg, int id, int power = POWER_DEFAULT, bool team = TEAM_DEFAULT, int type = ENTITY_PLAYER) {
 		this->power = power;
 		this->renderer = renderer;
 		this->team = team;
@@ -172,10 +221,10 @@ public:
 		map_enti.insert(make_pair(id, this));
 		RenderEntity();
 	}
-	
+
 
 	void RenderEntity() {
-		SDL_RenderCopyEx(renderer, img, &src, &dst, angle,NULL, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, img, &src, &dst, angle, NULL, SDL_FLIP_NONE);
 	}
 	void PrintInfo() {
 		PrintPoint(this->center, "center");
@@ -200,15 +249,15 @@ public:
 				entity->RenderEntity();
 			}
 			RenderEntity();
-			
+
 		}
 
 		if (flag)
 			return false;
 
-		switch (event.type) { 
+		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
-		//	cout << (int)event.button.button<<endl;
+			//	cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
 			case ENTITY_PLAYER:
@@ -235,24 +284,24 @@ public:
 					this->focused = false;
 				}
 				break;
-		
+
 			}
 		}
 		return false;
 	}
 	void Animation(SDL_Point p) {
-			center = p;
-			moveRect(this->dst, center);
+		center = p;
+		moveRect(this->dst, center);
 	}
 	void removePlayer() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-			if ((*it)->type == ENTITY_ROPE&& !SDL_PointInRect(&point2, &(*it)->reg)) {
+			if ((*it)->type == ENTITY_ROPE && !SDL_PointInRect(&point2, &(*it)->reg)) {
 				(*it)->m_e.erase(id);
 			}
 		}
 		R_status = getStatus();
 	}
-	
+
 	void addPlayer() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->type == ENTITY_ROPE && SDL_PointInRect(&point2, &(*it)->reg)) {
@@ -269,7 +318,7 @@ public:
 		}
 	}
 
-}; 
+};
 void printStatus() {
 
 	vector<int>status = getStatus();
@@ -285,7 +334,7 @@ vector<int> getStatus() {
 			int sum = 0;
 			MAP_ENTI m_e = (*it)->m_e;
 			for (auto it2 = m_e.begin(); it2 != m_e.end(); it2++) {
-				if(it2->second->team==ENEMY)
+				if (it2->second->team == ENEMY)
 					sum -= (*it2).second->power;
 				else
 					sum += (*it2).second->power;
@@ -305,7 +354,7 @@ double getAngle(SDL_Point p1, SDL_Point p2) {
 	int dx = x2 - x1;
 	int dy = y2 - y1;
 
-	double rad = atan2(dy, dx );
+	double rad = atan2(dy, dx);
 	double degree = (rad * 180) / M_PI;
 
 	return degree;
