@@ -320,15 +320,15 @@ public:
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
 			case ENTITY_PLAYER:
-				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) && !flag) {
+				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) && team != ENEMY) {
 					this->focused = true;
 					cancelfocus();
 					return true;
 				}
-				else if (event.button.button == SDL_BUTTON_RIGHT && focused && !flag) {
+				else if (event.button.button == SDL_BUTTON_RIGHT && focused && team != ENEMY) {
 					if (point2.y < 120)
 						return false;
-				/*	getPoints(v, this->center, point2);
+					getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
 						angle += 180;
@@ -338,9 +338,9 @@ public:
 					moveRect(this->reg, center);
 					this->focused = false;
 					idQ.push(id);
-					removePlayer();*/
+					removePlayer();
 				//	moveEntity(id,center, point2);
-					sendEntity(id, center, point2);
+				//	sendEntity(id, center, point2);
 					return false;
 				}
 				else {
