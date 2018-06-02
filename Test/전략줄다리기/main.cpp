@@ -330,9 +330,6 @@ int main(void) {
 			break;
 		}
 		
-		
-		
-
 		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
 		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);			//적이름
 		SDL_RenderPresent(renderer);
