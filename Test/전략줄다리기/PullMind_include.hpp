@@ -45,12 +45,13 @@ class Entity;
 #define ENTITY_PLAYER 0
 #define ENTITY_ROPE 1
 #define ENTITY_BG 2
+#define ENTITY_ENDROPE 4
 
 typedef vector<SDL_Point> VecP;
 typedef vector<Entity *> VEC_ENTI;
 typedef map<int, Entity *> MAP_ENTI;
 typedef wchar_t Unicode;
-
+typedef pair<int, int> ii;
 
 
 extern VEC_ENTI vec_enti;
@@ -70,54 +71,7 @@ double getAngle(SDL_Point p1, SDL_Point p2);
 vector<int> getStatus();
 void printStatus();
 // 입력창 함수
-TTF_Font * Font_Size[100];
-TTF_Font * Font_Size2[100];
 
-void HitMind_TTF_Init();
-void HitMind_TTF_Close();
-void HitMind_TTF2_Init();
-void HitMind_TTF2_Close();
-void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
-int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m);
-SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
-int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color);
-int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, Uint16* sentence, int x, int y, SDL_Color Color) {
-	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
-	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
-	SDL_Rect Src;
-	Src.x = 0;
-	Src.y = 0;
-	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
-	SDL_Rect Dst;
-	Dst.x = x;
-	Dst.y = y;
-	Dst.w = Src.w;
-	Dst.h = Src.h;
-	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
-	SDL_DestroyTexture(Texture);
-	return Src.w;// 출력할 문자열의 너비를 반환
-}
-int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
-{
-	if (m == 1)
-		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
-	else if (m == 2)
-		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
-
-	return 0;	//평소에도 0을 리턴
-}
-SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스쳐에 이미지파일 로드하는 함수 선언
-	int imgFlags = IMG_INIT_JPG | IMG_INIT_PNG;// JPG파일과 PNG파일 로드 가능
-	if (IMG_Init(imgFlags) != imgFlags) {//IMG 초기화하고 초기화 안되면 if문 실행
-
-		IMG_Quit();// IMG 종료
-		return nullptr;// 널포인터 반환
-	}
-	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
-	SDL_FreeSurface(Surface);// 서피스 메모리해제
-	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
 
 // --------------
 class Entity {
@@ -137,8 +91,8 @@ public:
 	bool focused = false;
 	int type;
 	double angle = 0;
-	
-		
+	double rope_x;
+	ii rope_boundary= make_pair(410,1510);
 
 
 	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power = POWER_DEFAULT, bool team = TEAM_DEFAULT, int type = ENTITY_PLAYER) {
@@ -151,6 +105,7 @@ public:
 		this->reg = reg;
 		this->center = Point(dst.x + dst.w / 2, dst.y + dst.h / 2);
 		this->type = type;
+		this->rope_x = (double)center.x;
 		SDL_QueryTexture(this->img, NULL, NULL, &this->src.w, &this->src.h);
 		vec_enti.push_back(this);
 		map_enti.insert(make_pair(id, this));
@@ -169,16 +124,26 @@ public:
 		PrintRect(this->dst, "dst");
 	}
 	bool Callback(SDL_Event event) {
-		if (type == ENTITY_BG)
+		if (type == ENTITY_BG|| type== ENTITY_ENDROPE )
 			return false;
 
 		if (type == ENTITY_ROPE) {
-			center.x -= R_status[id - 1];
+			if (center.x < rope_boundary.first || rope_boundary.second < center.x) {
+				type = ENTITY_ENDROPE;
+				return false;
+			}
+			int dx = center.x;
+
+			rope_x -= R_status[id - 1] / 10.0;
+			center.x = round(rope_x);
+			
+			dx -= center.x;
+
 			moveRect(this->dst, center);
 			moveRect(this->reg, center);
 			for (auto it = m_e.begin(); it != m_e.end(); it++) {
 				Entity *entity = (*it).second;
-				entity->center.x -= R_status[id - 1];
+				entity->center.x -= dx;
 				moveRect(entity->dst, entity->center);
 				moveRect(entity->reg, entity->center);
 				entity->RenderEntity();
@@ -275,6 +240,9 @@ vector<int> getStatus() {
 					sum += (*it2).second->power;
 			}
 			v.push_back(sum);
+		}
+		else if ((*it)->type == ENTITY_ENDROPE) {
+			v.push_back(0);
 		}
 	}
 	return v;

@@ -5,7 +5,7 @@
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
 #undef main 
-#define SOOHAN
+
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 vector<int> R_status(5);
@@ -228,28 +228,30 @@ int main(void) {
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 //	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
-	
+#endif
 	SDL_Window *window = SDL_CreateWindow("Pull Mind", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	Entity *Line[5], *entity[15], *enemies[15];
+
+	Entity *BG = new Entity(renderer, "./resources/image/out.jpg", Rect(0, 0, 1920, 1080), Rect(0, 0, 1920, 1080), 6, 0, false, ENTITY_BG);
 	
-	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(460, 200, 900, 20), Rect(460, 200, 900, 100), 1, 0, false, ENTITY_ROPE);
-	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(560, 386, 700, 20), Rect(560, 386, 700, 100), 2, 0, false, ENTITY_ROPE);
-	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(460, 540, 900, 20), Rect(460, 540, 900, 100), 3, 0, false, ENTITY_ROPE);
-	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(560, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
-	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(460, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
+	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 200, 900, 20), Rect(460, 200, 900, 100), 1, 0, false, ENTITY_ROPE);
+	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 386, 700, 20), Rect(560, 386, 700, 100), 2, 0, false, ENTITY_ROPE);
+	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(510, 540, 900, 20), Rect(460, 540, 900, 100), 3, 0, false, ENTITY_ROPE);
+	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
+	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
 
 
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 8-i; j++) {
-			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 75 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 75 + (i * 65) + (120 * j), 50, 50), i*8+j+6, 1, ALLY, ENTITY_PLAYER);
+			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
 		}
 	}
 	for (int i = 1; i >= 0; i--) {
 		for (int j = 6 + (1 - i); j >= 0; j--) {
-			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mor_11.png", Rect(1920 - (75 + (100 * i)), 1080 - (145 + (i * 65) + (120 * j)), 50, 50), Rect(1920 - (75 + (100 * i)), 1080 - (145 + (i * 65) + (120 * j)), 50, 50), i * 8 + j + 21, 1, ENEMY, ENTITY_PLAYER);
+			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mor_11.png", Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), i * 8 + j + 22, 1, ENEMY, ENTITY_PLAYER);
 		}
 	}
 
@@ -262,7 +264,7 @@ int main(void) {
 	SDL_Event event;
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	while (!quit) {
-		SDL_WaitEventTimeout(&event, 10);
+		SDL_WaitEventTimeout(&event, 0);
 	
 
 		SDL_RenderClear(renderer);
@@ -273,7 +275,7 @@ int main(void) {
 		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
-			if (entity->flag == false) {
+			if (entity->flag == false && entity->type!=ENTITY_ENDROPE) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
