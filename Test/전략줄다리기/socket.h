@@ -66,3 +66,4 @@ void join_room(int roomcnt) {
 	send(server, string, (int)strlen(string), 0);
 	status = 2;
 }
+

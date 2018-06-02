@@ -2,12 +2,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "SDL/SDL.h"
-#include "socket.h"
 #include "PullMind_include.hpp"
 
 
-#pragma comment (lib, "ws2_32.lib")
-#pragma comment (lib , "lib/SDL2.lib")
 #undef main 
 
 VEC_ENTI vec_enti;
@@ -42,12 +39,29 @@ void ReceiveHandler(void) {
 	char msg[255] = "";
 	SDL_Event event = { 0 };
 	char buff[100] = "";
+	SDL_Point p1, p2;
+	int e_num;
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
 
-		printf("%s\n", msg);
-		if (strstr(msg, "match ") != NULL) {
+		//printf("%s\n", msg);
+		if (msg[3] == 'e' && msg[2] == 'v') {
+
+			sscanf(msg, "move %d %d %d,%d %d,%d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+			
+			if (buffint != my_idx) {
+				if (e_num - 7 <= 8) {
+					e_num += 22;
+				}
+				else {
+					e_num += 7;
+				}
+			}
+
+			moveEntity(e_num, p1, p2);
+		}
+		else if (strstr(msg, "match ") != NULL) {
 			Sleep(1000);
 			event.user.code = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
@@ -66,6 +80,9 @@ void ReceiveHandler(void) {
 			event.user.code = EXITING;
 
 		}
+		else if (strstr(msg, "join_success ") != NULL) {
+			sscanf(msg, "join_success %d", &my_idx);
+		}
 		SDL_PushEvent(&event);
 		memset(&event, 0, sizeof(event));
 		event.type = SDL_USEREVENT;
@@ -81,6 +98,7 @@ int main(void) {
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
+	bool is30 = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	SDL_Color white_color = { 255,0,0 ,0 };
@@ -148,7 +166,8 @@ int main(void) {
 
 	
 	int count = 0;
-	while (loading) {
+	gamings = true;
+	while (!loading) {
 		SDL_WaitEventTimeout(&event, 500);
 		
 		switch (event.type) {
@@ -200,7 +219,7 @@ int main(void) {
 	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(608, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
 	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(510, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
 
-
+	
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 8-i; j++) {
 			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
@@ -218,7 +237,10 @@ int main(void) {
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	bool dup = false;
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	double limit = 30;//초단위
+	SDL_Rect timer = Rect(30,100, 1820, 8);
+	SDL_Color timer_color = { 255,255,0 ,0 };
+	int start = clock();
 	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
 
@@ -233,7 +255,7 @@ int main(void) {
 			Entity* entity = (*it);
 			if (entity->focused)
 				entity->drawFocus();
-			if (entity->flag == false && entity->type != ENTITY_ENDROPE) {
+			if (entity->flag == false && entity->type != ENTITY_ENDROPE || !is30) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
