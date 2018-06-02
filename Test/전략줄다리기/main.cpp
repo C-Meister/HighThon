@@ -141,9 +141,10 @@ int main(void) {
 
 		switch (event.type) {
 		case SDL_USEREVENT:
+			printf("userevent : %d\n", event.user.type);
 			if (event.user.code == SOCKET_EVENT) {
 				if (event.user.type == MATCHING) {
-					printf("%s", event.user.data1);
+					printf("%s", (char *)event.user.data1);
 					//enemy_name = string((char *)event.user.data1);
 					cout << enemy_name << endl;
 					printf("match success\n");
