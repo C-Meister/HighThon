@@ -32,7 +32,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include.h">
+    <ClInclude Include="include.hpp">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PullMind_include.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
