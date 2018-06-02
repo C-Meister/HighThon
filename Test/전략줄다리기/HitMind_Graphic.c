@@ -10,7 +10,7 @@ int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int 
 	SDL_Rect Src;
 	Src.x = 0;
 	Src.y = 0;
-	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); 
 	SDL_Rect Dst;
 	Dst.x = x;
 	Dst.y = y;

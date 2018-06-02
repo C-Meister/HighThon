@@ -14,6 +14,7 @@
 #include <WinInet.h>
 #include <tchar.h>
 #include <string>
+#include <vector>
 #include "lib//iconv.h"
 #include "SDL/SDL.h"			//SDL - ?? ???????
 #include "SDL/SDL_image.h"		//SDL - ????? ???????
