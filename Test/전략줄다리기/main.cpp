@@ -142,14 +142,21 @@ int main(void) {
 		case SDL_USEREVENT:
 			if (event.user.code == SOCKET_EVENT) {
 				if (event.user.type == MATCHING) {
-					enemy_name = string((char *)event.user.data1);
+					printf("%s", event.user.data1);
+					//enemy_name = string((char *)event.user.data1);
 					cout << enemy_name << endl;
 					printf("match success\n");
 					loading = false;
 					//EXITING 이벤트 처리	
+						
+				}
+				else if (event.user.type == EXITING) {
+					gaming = false;
+					break;
 				}
 			}
 			break;
+
 		case SDL_QUIT:
 			matching_end();
 			loading = false;
@@ -248,9 +255,9 @@ int main(void) {
 				SDL_Point p = entity->v.back(); entity->v.pop_back();
 				entity->Animation(p);
 				idQ.push(id);
-				}
-			entity->RenderEntity();
 			}
+			entity->RenderEntity();
+		}
 
 
 
@@ -259,10 +266,10 @@ int main(void) {
 
 		}
 		SDL_RenderPresent(renderer);
-		}
+	}
 
 #endif
 
 
 
-	}
+}
