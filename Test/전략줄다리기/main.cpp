@@ -8,6 +8,7 @@
 #define SOOHAN
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
+vector<int> R_status(5);
 
 queue<int> idQ;
 void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
@@ -64,178 +65,32 @@ void ReceiveHandler(void) {
 
 int main(void) {
 
-#ifdef SOOHAN
 
-	connectServer();
-	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
-	bool loading = false;
-	bool gamings = false;
-	bool fquit = false;
-	SDL_Window * Window = NULL;
-	SDL_Color color = { 0,0,0 ,0 };
-	TTF_Init();
-	HitMind_TTF_Init();
-	HitMind_TTF2_Init();
-
-	int Display_X = 1920;
-	int Display_Y = 1080;
-	SDL_Window* window = SDL_CreateWindow("HitMind_2", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN);
-	SDL_Renderer*	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	SDL_Event event;
-	string str;
-	TTF_Init();
-	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
-
-
-	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
-	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
-	if (lobiimage == NULL)
-		printf("");
-
-	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-	RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
-	while (!fquit) {
-
-		SDL_WaitEvent(&event);
-
-		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-		RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
-
-
-
-		switch (event.type) {
-		case SDL_KEYDOWN:
-			if (event.key.keysym.sym == SDLK_BACKSPACE && !str.empty())
-				str.pop_back();
-			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) { //엔터입력
-				matching_start(str.c_str());
-				user_name = str;
-				fquit = true;
-				loading = true;
-			}
-			break;
-		case SDL_TEXTINPUT:
-			str += event.text.text;
-			//SDL_RenderClear(renderer);
-			cout << str << endl;
-			break;
-		case SDL_QUIT:
-			if (status == 1)
-				matching_end();
-			fquit = TRUE;
-			break;
-		default:
-			break;
-		}
-
-		TTF_DrawText(renderer, str, Point(720, 550), font, color);
-		SDL_RenderPresent(renderer);
-
-	}
-
-
-	
-	int count = 0;
-	while (loading) {
-		SDL_WaitEventTimeout(&event, 500);
-
-		switch (event.type) {
-		case SDL_USEREVENT:
-			if (event.user.code == SOCKET_EVENT) {
-				if (event.user.type == MATCHING) {
-					printf("%s", event.user.data1);
-					//enemy_name = string((char *)event.user.data1);
-					cout << enemy_name << endl;
-					printf("match success\n");
-					loading = false;
-					//EXITING 이벤트 처리	
-						
-				}
-				else if (event.user.type == EXITING) {
-					gamings = false;
-					break;
-				}
-			}
-			break;
-
-		case SDL_QUIT:
-			matching_end();
-			loading = false;
-			break;
-		}
-		
-		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-		
-		string lodingS;
-		if (count % 4 == 0)
-			lodingS = "matching";
-		else if (count % 4 == 1)
-			lodingS = "matching .";
-		else if (count % 4 == 2)
-			lodingS = "matching . .";
-		else if (count % 4 == 3)
-			lodingS = "matching . . .";
-
-		TTF_DrawText(renderer,  lodingS, Point(820, 550), font, color);
-		SDL_RenderPresent(renderer);
-		count++;
-	}
-
-	printf("탈출");
-
-	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
-	while (gamings) {
-		SDL_WaitEvent(&event);
-
-		switch (event.type) {
-		
-		case SDL_QUIT:
-			matching_end();
-			gamings = false;
-			break;
-		}
-
-		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-
-
-		
-		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
-		TTF_DrawText(renderer, enemy_name, Point(820, 550), font, color);
-		SDL_RenderPresent(renderer);
-		count++;
-	}
-
-	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
-
-	SDL_Quit();
-	return 0;
-
-#else
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 //	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
 	
-	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 1280, 720, SDL_WINDOW_SHOWN);
+	SDL_Window *window = SDL_CreateWindow("Pull Mind", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	Entity *Line[5], *entity[15], *enemies[15];
 	
-	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 160, 700, 20), Rect(290, 160, 700, 100), 1, 0, false, ENTITY_ROPE);
-	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 260, 700, 20), Rect(290, 260, 700, 100), 2, 0, false, ENTITY_ROPE);
-	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(290, 360, 700, 20), Rect(290, 360, 700, 100), 3, 0, false, ENTITY_ROPE);
-	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 460, 700, 20), Rect(290, 460, 700, 100), 4, 0, false, ENTITY_ROPE);
-	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(290, 560, 700, 20), Rect(290, 560, 700, 100), 5, 0, false, ENTITY_ROPE);
+	Line[0] = new Entity(renderer, "./resources/entity/Line.png", Rect(460, 200, 900, 20), Rect(460, 200, 900, 100), 1, 0, false, ENTITY_ROPE);
+	Line[1] = new Entity(renderer, "./resources/entity/Line.png", Rect(560, 386, 700, 20), Rect(560, 386, 700, 100), 2, 0, false, ENTITY_ROPE);
+	Line[2]= new Entity(renderer, "./resources/entity/Line.png", Rect(460, 540, 900, 20), Rect(460, 540, 900, 100), 3, 0, false, ENTITY_ROPE);
+	Line[3] = new Entity(renderer, "./resources/entity/Line.png", Rect(560, 694, 700, 20), Rect(560, 694, 700, 100), 4, 0, false, ENTITY_ROPE);
+	Line[4] = new Entity(renderer, "./resources/entity/Line.png", Rect(460, 880, 900, 20), Rect(460, 880, 900, 100), 5, 0, false, ENTITY_ROPE);
 
 
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 8-i; j++) {
-			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (50 * i), 25 + (50 * j), 50, 50), Rect(25 + (50 * i), 25 + (50 * j), 50, 50), i*8+j+6, 1, ALLY, ENTITY_PLAYER);
+			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 75 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 75 + (i * 65) + (120 * j), 50, 50), i*8+j+6, 1, ALLY, ENTITY_PLAYER);
 		}
 	}
-	for (int i = 0; i < 2; i++) {
-		for (int j = 0; j < 8 - i; j++) {
-			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (50 * i), 25 + (50 * j), 50, 50), Rect(25 + (50 * i), 25 + (50 * j), 50, 50), i * 8 + j + 21, 1, ALLY, ENTITY_PLAYER);
+	for (int i = 1; i >= 0; i--) {
+		for (int j = 6 + (1 - i); j >= 0; j--) {
+			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mor_11.png", Rect(1920 - (75 + (100 * i)), 1080 - (145 + (i * 65) + (120 * j)), 50, 50), Rect(1920 - (75 + (100 * i)), 1080 - (145 + (i * 65) + (120 * j)), 50, 50), i * 8 + j + 21, 1, ENEMY, ENTITY_PLAYER);
 		}
 	}
 
@@ -252,6 +107,11 @@ int main(void) {
 	
 
 		SDL_RenderClear(renderer);
+		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+			if ((*it)->Callback(event)) {
+				break;
+			}
+		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
 			if (entity->flag == false) {
@@ -275,15 +135,11 @@ int main(void) {
 			entity->RenderEntity();
 		}
 		
-		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-			if ((*it)->Callback(event)) {
-				break; 
-			}
-		}
+		
 		SDL_RenderPresent(renderer);
 	}
 
-#endif
+
 
 
 
