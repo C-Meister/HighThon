@@ -100,8 +100,8 @@ int main(void) {
 	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
 
 
-	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
-	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
+	SDL_Texture *lobiimage = IMG_LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
+	SDL_Texture *inputimage = IMG_LoadTexture(renderer, ".\\resources\\image\\input.png");
 	if (lobiimage == NULL)
 		printf("");
 
@@ -193,7 +193,7 @@ int main(void) {
 
 	printf("탈출");
 
-	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
+	SDL_Texture *outimage = IMG_LoadTexture(renderer, ".\\resources\\image\\out.jpg");
 	while (gamings) {
 		SDL_WaitEvent(&event);
 
@@ -209,8 +209,8 @@ int main(void) {
 
 
 		
-		TTF_DrawText(renderer, user_name, Point(70, 30), font, white_color);           //내이름
-		TTF_DrawText(renderer, enemy_name, Point(1750, 30), font, white_color);   //적이름
+		Put_Text_Center(renderer, user_name, 75,15,210,81,255,255,255,35,1);           //내이름
+		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);
 		SDL_RenderPresent(renderer);
 		count++;
 	}
