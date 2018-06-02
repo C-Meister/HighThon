@@ -17,6 +17,8 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <queue>
+#include <map>
 #include "lib//iconv.h"
 #include "SDL/SDL.h"			//SDL - ?? ???????
 #include "SDL/SDL_image.h"		//SDL - ????? ???????
@@ -160,15 +162,13 @@ public:
 	VecP v;
 	SDL_Point center, point= Point(-1, -1),point2;
 	int power;
-	int id;
 	bool team;
 		
 
 
-	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
+	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
 		this->power = power;
 		this->renderer = renderer;
-		this->id = id;
 		this->team = team;
 		this->img = IMG_LoadTexture(renderer, filename.c_str());
 		this->dst = dst;
@@ -220,8 +220,5 @@ public:
 
 
 };
-typedef struct Entities {
-	Entity *entities;
-	int size;
-}Entities;
+
 
