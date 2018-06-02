@@ -459,7 +459,7 @@ void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 	e->focused = false;
 	idQ.push(id);
 	e->removePlayer();
-
+	printf("GetEntity\n");
 	return;
 }
 void sendEntity(int id, SDL_Point p1, SDL_Point p2) {

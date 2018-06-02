@@ -51,6 +51,7 @@ void ReceiveHandler(void) {
 			sscanf(msg, "move %d %d %d,%d %d,%d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
 			
 			if (buffint != my_idx) {
+				printf("Ememy Turn\n");
 				if (e_num - 7 <= 8) {
 					e_num += 22;
 				}
@@ -58,7 +59,9 @@ void ReceiveHandler(void) {
 					e_num += 7;
 				}
 			}
-
+			else
+				printf("My Turn\n");
+			
 			moveEntity(e_num, p1, p2);
 		}
 		else if (strstr(msg, "match ") != NULL) {
@@ -166,8 +169,7 @@ int main(void) {
 
 	
 	int count = 0;
-	gamings = true;
-	while (!loading) {
+	while (loading) {
 		SDL_WaitEventTimeout(&event, 500);
 		
 		switch (event.type) {
@@ -255,27 +257,38 @@ int main(void) {
 			Entity* entity = (*it);
 			if (entity->focused)
 				entity->drawFocus();
-			if (entity->flag == false && entity->type != ENTITY_ENDROPE || !is30) {
+			if (!is30 || (entity->flag == false && entity->type != ENTITY_ENDROPE)) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
 		}
-		int size = idQ.size();
-		for (int i = 0; i < size; i++) {
-			int id = idQ.front(); idQ.pop();
-			Entity * entity = map_enti.find(id)->second;
-			if (entity->v.empty()) {
-				entity->flag = false;
-				entity->addPlayer();
+		if (is30) {
+			int size = idQ.size();
+			for (int i = 0; i < size; i++) {
+				int id = idQ.front(); idQ.pop();
+				Entity * entity = map_enti.find(id)->second;
+				if (entity->v.empty()) {
+					entity->flag = false;
+					entity->addPlayer();
+				}
+				else {
+					SDL_Point p = entity->v.back(); entity->v.pop_back();
+					entity->Animation(p);
+					idQ.push(id);
+				}
+				entity->RenderEntity();
+				entity->drawFocus();
 			}
-			else {
-				SDL_Point p = entity->v.back(); entity->v.pop_back();
-				entity->Animation(p);
-				idQ.push(id);
-			}
-			entity->RenderEntity();
-			entity->drawFocus();
 		}
+		if (clock() - start >= limit * 1000) {
+			is30 = true;
+		}
+		else {
+			SDL_SetRenderDrawColor(renderer, timer_color.r, timer_color.g, timer_color.b, timer_color.a);
+			SDL_RenderFillRect(renderer, &Rect(timer.x, timer.y, timer.w*(1 - (clock() - start) / (limit * 1000)), timer.h));
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		}
+		
 
 		switch (event.type) {
 		case SDL_QUIT:
