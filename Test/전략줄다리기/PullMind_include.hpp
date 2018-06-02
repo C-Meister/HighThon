@@ -140,6 +140,38 @@ SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스
 	return Texture;// Texture포인터 반환
 }
 
+void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
+
+	SDL_Color Color = { r,g,b,0 };
+	SDL_Surface * Surface = 0;
+	SDL_Texture* Texture = 0;
+	SDL_Rect Src;
+	SDL_Rect Dst;
+	Src.x = 0;
+	Src.y = 0;
+	while (1) {
+		if (m == 1)
+			Surface = TTF_RenderUTF8_Blended(Font_Size[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		else if (m == 2)
+			Surface = TTF_RenderUTF8_Blended(Font_Size2[size], sentence.c_str(), Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+		Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+		SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+		SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+		if ((Src.w > w || Src.h > h) && size>1) {
+			size--;
+		}
+		else {
+			break;
+		}
+	}
+	Dst.x = x + w / 2.0 - Src.w / 2.0;
+	Dst.y = y + h / 2.0 - Src.h / 2.0;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return;	//평소에도 0을 리턴
+}
 
 void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh) {//텍스쳐를 출력하는 함수 선언
 	SDL_Rect Src = {0};// 직사각형 선언
