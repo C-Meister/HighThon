@@ -16,6 +16,7 @@ void ReceiveHandler(void) {
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
 		printf("%s\n", msg);
 		strcpy(lastrecv, msg);
+		memset(msg, 0, sizeof(msg));
 	}
 }
 int connectServer(void) {
