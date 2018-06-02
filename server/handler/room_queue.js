@@ -29,8 +29,11 @@ module.exports = {
             // queuematch.splice(queuematch.filter(function (el){
             //     return el.client.id !== client.id;
             // }), 1);
-            queuematch.splice(queuematch.map((data)=>{return data.client.id}).indexOf(client.id), 1);
+            const idx = queuematch.map((data)=>{return data.client.id}).indexOf(client.id);
+            if (idx !== -1){
+            queuematch.splice(idx, 1);
             queuecnt--;
+            }
             console.log('delete ' + client.id);
         }
 

@@ -21,13 +21,10 @@
     <ClCompile Include="HitMind_Graphic.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="HitMindwithCver2.c">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="socket.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="HitMind_Console.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="socket.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,6 +33,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="socket.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

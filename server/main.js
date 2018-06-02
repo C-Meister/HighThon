@@ -10,8 +10,7 @@ var handler = require('./handler/handler');
  */
 global.toHangul = function(str){
     return iconv.encode(str, 'euckr');
-
-}
+};
 handler.addListener(room_queue.push);
 handler.addListener(room_queue.pop);
 var server = net.createServer(function (client){
@@ -23,6 +22,14 @@ var server = net.createServer(function (client){
     client.on('close', function(err){
         room_queue.pop.callback('', client);
     });
+    client.on('error', function(err){
+   //     room_queue.pop.callback('', client);
+
+    });
+});
+
+server.on('error', function(err){
+    console.log(err);
 });
 
 server.listen(1331, function () {
