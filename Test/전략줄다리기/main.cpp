@@ -67,7 +67,8 @@ int main(void) {
 
 	connectServer();
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
-	bool gaming = false;
+	bool loading = false;
+	bool gamings = false;
 	bool fquit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
@@ -109,7 +110,7 @@ int main(void) {
 				matching_start(str.c_str());
 				user_name = str;
 				fquit = true;
-				gaming = true;
+				loading = true;
 			}
 			break;
 		case SDL_TEXTINPUT:
@@ -134,23 +135,24 @@ int main(void) {
 
 	
 	int count = 0;
-	while (gaming) {
+	while (loading) {
 		SDL_WaitEventTimeout(&event, 500);
 
 		switch (event.type) {
 		case SDL_USEREVENT:
-			if (event.user.code = SOCKET_EVENT) {
+			if (event.user.code == SOCKET_EVENT) {
 				if (event.user.type == MATCHING) {
 					enemy_name = string((char *)event.user.data1);
 					cout << enemy_name << endl;
 					printf("match success\n");
+					loading = false;
 					//EXITING 이벤트 처리	
 				}
 			}
 			break;
 		case SDL_QUIT:
 			matching_end();
-			gaming = false;
+			loading = false;
 			break;
 		}
 		
@@ -171,15 +173,17 @@ int main(void) {
 		count++;
 	}
 
+	printf("탈출");
+
 	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
-	while (gaming) {
+	while (gamings) {
 		SDL_WaitEvent(&event);
 
 		switch (event.type) {
 		
 		case SDL_QUIT:
 			matching_end();
-			gaming = false;
+			gamings = false;
 			break;
 		}
 
