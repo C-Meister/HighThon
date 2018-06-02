@@ -27,6 +27,7 @@ var server = net.createServer(function (client){
 
     client.on('close', function(err){
         switch(client.status){
+            case 0:
             case 1:
             room_queue.pop.callback('', client);
             break;

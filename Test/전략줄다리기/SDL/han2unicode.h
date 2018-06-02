@@ -1,4 +1,4 @@
-
+#pragma once
 /* KSC5601 -> Unicode 2.0 mapping table, compressed for the 94*94 codeset. */
 /* Generated based on  KSC5601.txt at
    ftp://ftp.unicode.org/Public/MAPPINGS/EASTASIA/KSC  */

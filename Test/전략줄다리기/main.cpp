@@ -1,4 +1,4 @@
-#include "SDL/SDL.h"
+ï»¿#include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
 
@@ -12,8 +12,8 @@ MAP_ENTI map_enti;
 queue<int> idQ;
 void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
 	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);// ¼­ÇÇ½º·ÎºÎÅÍ ÅØ½ºÃÄ¸¦ »ý¼ºÇÑ´Ù
-	SDL_FreeSurface(surface);//¼­ÇÇ½º ¸Þ¸ð¸®¸¦ ÇØÁ¦ ÇØÁØ´Ù.
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);// ì„œí”¼ìŠ¤ë¡œë¶€í„° í…ìŠ¤ì³ë¥¼ ìƒì„±í•œë‹¤
+	SDL_FreeSurface(surface);//ì„œí”¼ìŠ¤ ë©”ëª¨ë¦¬ë¥¼ í•´ì œ í•´ì¤€ë‹¤.
 	SDL_Rect src;
 	src.x = 0;
 	src.y = 0;
@@ -53,7 +53,7 @@ int main(void) {
 	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
 	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
 	if (lobiimage == NULL)
-		printf("ÀÌ¹ÌÁö ¸øºÒ·¯¿È");
+		printf("ì´ë¯¸ì§€ ëª»ë¶ˆëŸ¬ì˜´");
 
 	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 	RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
@@ -101,17 +101,21 @@ int main(void) {
 
 	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
 
-
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100, 100, 100, 100), Rect(100, 100, 100, 100), 1, 1, 1);
+
+	Entity *BG = new Entity(renderer, "./resources/image/porg.jpg", Rect(0, 0, 640, 480), Rect(0, 0, 640, 480), 4, 0, false, ENTITY_BG);
+
+	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100,100, 100,100),Rect(100,100,100,100), 1, 1, 1);
 	Entity *entity2 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 100, 100, 100), Rect(300, 100, 100, 100), 2, 1, 1);
 	Entity *entity3 = new Entity(renderer, "./resources/image/porg.jpg", Rect(300, 300, 100, 100), Rect(300, 300, 100, 100), 3, 1, 1);
 
 
+	BG->RenderEntity();
 	entity->RenderEntity();
 	entity2->RenderEntity();
 	entity3->RenderEntity();
+	
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	SDL_Event event;
@@ -121,7 +125,7 @@ int main(void) {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
 			if (entity->flag == false) {
-				//¾Ö´Ï¸ÞÀÌ¼Ç ÁßÀÌ ¾Æ´Ô
+				//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½
 				entity->RenderEntity();
 			}
 		}
