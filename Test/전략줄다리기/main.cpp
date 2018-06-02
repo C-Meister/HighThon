@@ -76,8 +76,6 @@ void ReceiveHandler(void) {
 
 int main(void) {
 
-#ifdef SOOHAN
-
 	connectServer();
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
 	bool loading = false;
@@ -101,8 +99,8 @@ int main(void) {
 	TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 35);
 
 
-	SDL_Texture *lobiimage = LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
-	SDL_Texture *inputimage = LoadTexture(renderer, ".\\resources\\image\\input.png");
+	SDL_Texture *lobiimage = IMG_LoadTexture(renderer, ".\\resources\\image\\tema.jpg");
+	SDL_Texture *inputimage = IMG_LoadTexture(renderer, ".\\resources\\image\\input.png");
 	if (lobiimage == NULL)
 		printf("");
 
@@ -192,36 +190,6 @@ int main(void) {
 		count++;
 	}
 
-	printf("탈출");
-
-	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
-	while (gamings) {
-		SDL_WaitEvent(&event);
-
-		switch (event.type) {
-		
-		case SDL_QUIT:
-			matching_end();
-			gamings = false;
-			break;
-		}
-
-		RenderTextureXYWH(renderer,outimage, 0, 0, Display_X, Display_Y);
-
-
-		TTF_DrawText(renderer, user_name, Point(70, 30), font, white_color);           //내이름
-		TTF_DrawText(renderer, enemy_name, Point(1750, 30), font, white_color);   //적이름
-		SDL_RenderPresent(renderer);
-		count++;
-	}
-#else
-	SDL_Init(SDL_INIT_EVERYTHING);
-//	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
-#endif
-	SDL_Window *window = SDL_CreateWindow("Pull Mind", 0, 0, 1920, 1080, SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
-
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
 	Entity *Line[5], *entity[15], *enemies[15];
 
 	Entity *BG = new Entity(renderer, "./resources/image/out.jpg", Rect(0, 0, 1920, 1080), Rect(0, 0, 1920, 1080), 6, 0, false, ENTITY_BG);
@@ -250,12 +218,16 @@ int main(void) {
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	bool dup = false;
-	SDL_Event event;
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	while (!quit) {
+	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
 	
-
+		switch (event.type) {
+		case SDL_QUIT:
+			matching_end();
+			gamings = false;
+			break;
+		}
 		SDL_RenderClear(renderer);
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->Callback(event)) {
@@ -288,9 +260,13 @@ int main(void) {
 			entity->drawFocus();
 		}
 		
-		
+
+		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
+		Put_Text_Center(renderer, enemy_name, 1635, 15, 210, 81, 255, 255, 255, 35, 1);			//적이름
 		SDL_RenderPresent(renderer);
 	}
+
+
 
 
 }
