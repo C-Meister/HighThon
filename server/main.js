@@ -17,7 +17,7 @@ handler.addListener(room_queue.pop);
 var server = net.createServer(function (client){
     client.id = connection_id++;
     console.log('client connected');
-    client.write(`connection_id : ${client.id}`);
+    client.write(toHangul('한글'));
     handler.handler(client);  
 
     client.on('close', function(err){

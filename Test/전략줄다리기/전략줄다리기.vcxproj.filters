@@ -22,6 +22,7 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ClCompile Include="HitMindwithCver2.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -36,15 +37,14 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
 >>>>>>> edeea375605183e510af684331a56964e2c48689
+=======
+>>>>>>> parent of b897183... socket 수정
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PullMind_include.hpp">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="include.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="socket.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
