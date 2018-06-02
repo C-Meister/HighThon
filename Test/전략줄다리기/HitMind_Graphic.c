@@ -10,7 +10,7 @@ int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int 
 	SDL_Rect Src;
 	Src.x = 0;
 	Src.y = 0;
-	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h); 
 	SDL_Rect Dst;
 	Dst.x = x;
 	Dst.y = y;
@@ -1554,17 +1554,3 @@ void PrintInChatting(SDL_Renderer * renderer, SOCKCHAT **Chatlist, int first) {
 	}
 
 }*/
-void PrintNotice(SDL_Renderer * renderer, MYSQL*cons)
-{
-	printf("%d %d", Display_X, Display_Y);
-	int plus_y = 0;
-	Notice notice[5];
-	int i = Get_Notice_sql(cons, notice);
-	for (int j = 0; j < i; j++)
-	{
-		printf("%s\n", notice[j].content);
-		
-		plus_y += PutText_ln(NULL, Display_X * 0.37, Display_Y * 0.34, Display_Y * 0.4, renderer, notice[j].content, Display_X * 0.32, Display_Y * 0.4 + plus_y,30 * ((float)Display_X / 1920), 0, 0, 0, 1);
-		plus_y += 8;
-	}
-}
