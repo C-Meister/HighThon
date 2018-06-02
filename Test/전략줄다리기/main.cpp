@@ -53,10 +53,10 @@ void ReceiveHandler(void) {
 			if (buffint != my_idx) {
 				printf("Ememy Turn\n");
 				if (e_num - 6 <= 8) {
-					e_num += 22;
+					e_num += 15;
 				}
 				else {
-					e_num += 7;
+					e_num = 39-e_num;
 				}
 
 				p1.x = 1920 - p1.x;
@@ -106,7 +106,7 @@ int main(void) {
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
-	bool is30 = false;
+	bool is30 = true;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	SDL_Color white_color = { 255,0,0 ,0 };

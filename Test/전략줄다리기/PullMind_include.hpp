@@ -320,8 +320,9 @@ public:
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
 			case ENTITY_PLAYER:
-				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) && team != ENEMY) {
+				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg) /*&& team != ENEMY*/) {
 					this->focused = true;
+					cout << "id: " <<id << endl;
 					cancelfocus();
 					return true;
 				}
