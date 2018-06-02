@@ -32,7 +32,7 @@ int main(void) {
 	if (strLen == -1)
 		ErrorHandling("read() error!");
 	printf("Message from server: %s \n", message);
-
+	send(hSocket, "queue hello", 12, 0);
 	closesocket(hSocket);
 	WSACleanup();
 	return 0;
