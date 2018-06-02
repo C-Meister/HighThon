@@ -52,13 +52,12 @@ void ReceiveHandler(void) {
 	char buff[100] = "";
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
-	event.user.code = SOCKET_EVENT;
 	while (recv(server, msg, sizeof(msg), 0) > 0) {
 
 		printf("%s\n", msg);
 		if (strstr(msg, "match ") != NULL) {
 			Sleep(1000);
-			event.user.type = MATCHING;
+			event.user.code = MATCHING;
 			sscanf(msg, "match %[^n]s", buff);
 			event.user.data1 = buff;
 
@@ -71,11 +70,12 @@ void ReceiveHandler(void) {
 			send(server, msg, strlen(msg), 0);
 		}
 		else if (strstr(msg, "exitroom") != NULL) {
-			event.user.type = EXITING;
+			event.user.code = EXITING;
 
 		}
 		SDL_PushEvent(&event);
 		memset(&event, 0, sizeof(event));
+		event.type = SDL_USEREVENT;
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
 	}
@@ -157,25 +157,24 @@ int main(void) {
 	int count = 0;
 	while (loading) {
 		SDL_WaitEventTimeout(&event, 500);
-
+		
 		switch (event.type) {
 		case SDL_USEREVENT:
-			printf("userevent : %d\n", event.user.type);
-			if (event.user.code == SOCKET_EVENT) {
-				if (event.user.type == MATCHING) {
+				if (event.user.code == MATCHING) {
 					printf("%s", (char *)event.user.data1);
-					//enemy_name = string((char *)event.user.data1);
+					enemy_name = string((char *)event.user.data1);
 					cout << enemy_name << endl;
 					printf("match success\n");
 					loading = false;
+					gamings= true;
 					//EXITING 이벤트 처리	
 						
 				}
-				else if (event.user.type == EXITING) {
+				else if (event.user.code == EXITING) {
 					gamings = false;
 					break;
 				}
-			}
+			
 			break;
 
 		case SDL_QUIT:

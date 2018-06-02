@@ -8,7 +8,7 @@
 
 #define SOCKET_EVENT 7
 enum {
-	MATCHING, EXITING, MOVE
+	MATCHING=2, EXITING, MOVE
 };
 
 SOCKET server;
