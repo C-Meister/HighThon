@@ -68,7 +68,37 @@ void getPoints(VecP& v, SDL_Point p1, SDL_Point p2);
 double getAngle(SDL_Point p1, SDL_Point p2);
 vector<int> getStatus();
 void printStatus();
+// 입력창 함수
+TTF_Font * Font_Size[100];
+TTF_Font * Font_Size2[100];
 
+void HitMind_TTF_Init();
+void HitMind_TTF_Close();
+void HitMind_TTF2_Init();
+void HitMind_TTF2_Close();
+void RenderTextureXYWH(SDL_Renderer* Renderer, SDL_Texture * Texture, double xx, double yy, double ww, double hh);
+int PutText_Unicode(SDL_Renderer * renderer, Unicode * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m);
+SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file);
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, wchar_t* sentence, int x, int y, SDL_Color Color);
+int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, Uint16* sentence, int x, int y, SDL_Color Color) {
+	SDL_Surface * Surface = TTF_RenderUNICODE_Blended(Font, sentence, Color);// 폰트의 종류,문자열, 색깔을 보내서 유니코드로 렌더한다음 서피스에 저장한다
+	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);// 서피스로부터 텍스쳐를 생성한다
+	SDL_FreeSurface(Surface);//서피스 메모리를 해제 해준다.
+	SDL_Rect Src;
+	Src.x = 0;
+	Src.y = 0;
+	SDL_QueryTexture(Texture, NULL, NULL, &Src.w, &Src.h);
+	SDL_Rect Dst;
+	Dst.x = x;
+	Dst.y = y;
+	Dst.w = Src.w;
+	Dst.h = Src.h;
+	SDL_RenderCopy(Renderer, Texture, &Src, &Dst); //그대로 렌더러에 저장한다
+	SDL_DestroyTexture(Texture);
+	return Src.w;// 출력할 문자열의 너비를 반환
+}
+int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
+{
 	if (m == 1)
 		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
 	else if (m == 2)
@@ -83,6 +113,7 @@ SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스
 		IMG_Quit();// IMG 종료
 		return nullptr;// 널포인터 반환
 	}
+	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
 	SDL_FreeSurface(Surface);// 서피스 메모리해제
 	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
