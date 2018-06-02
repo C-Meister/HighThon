@@ -15,23 +15,6 @@ SDL_Point drag_first = Point(-1, -1);
 queue<int> idQ;
 
 
-void TTF_DrawTextUnicode(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
-	Uint16 text2[50];
-	han2unicode(text.c_str(), text2);
-	SDL_Surface * surface = TTF_RenderUNICODE_Blended(font, text2, color);
-	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_FreeSurface(surface);
-	SDL_Rect src;
-	src.x = 0;
-	src.y = 0;
-	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
-	SDL_Rect dst;
-	dst.x = point.x;
-	dst.y = point.y;
-	dst.w = src.w;
-	dst.h = src.h;
-	SDL_RenderCopy(renderer, texture, &src, &dst);
-}
 
 string user_name;
 string enemy_name;
@@ -260,11 +243,14 @@ int main(void) {
 		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
-			if (entity->focused)
-				entity->drawFocus();
+			
 			if (!is30 || (entity->flag == false && entity->type != ENTITY_ENDROPE)) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
+			}
+			if (entity->focused) {
+				entity->drawFocus();
+				entity->drawInfo();
 			}
 		}
 		if (is30) {
