@@ -29,7 +29,7 @@ string user_name;
 string enemy_name;
 void ReceiveHandler(void) {
 	char msg[255] = "";
-	SDL_Event event;
+	SDL_Event event = { 0 };
 	char buff[100] = "";
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
@@ -151,7 +151,7 @@ int main(void) {
 						
 				}
 				else if (event.user.type == EXITING) {
-					gaming = false;
+					gamings = false;
 					break;
 				}
 			}
