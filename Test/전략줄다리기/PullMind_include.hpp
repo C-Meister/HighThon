@@ -199,7 +199,7 @@ public:
 			else if (!compPoint(point,Point(-1,-1))) {
 				cout << "¿µ¿ª¹Ù±ù ±×¸®°í -1,-1ÀÌ ¾Æ´Ô" << endl;
 				getPoints(v, this->point, point2);
-				Animation(v);
+				Animation(v);//
 				v.clear();
 				this->center = point2;
 				moveRect(this->reg, center);
