@@ -16,6 +16,7 @@ global.toHangul = function(str){
 handler.addListener(room_queue.push);
 handler.addListener(room_queue.pop);
 handler.addListener(game.join);
+handler.addListener(game.Move);
 
 var server = net.createServer(function (client){
     client.id = connection_id++;
@@ -29,7 +30,7 @@ var server = net.createServer(function (client){
             case 1:
             room_queue.pop.callback('', client);
             break;
-            case 2:
+            default:
             game.onExit(client);
             break;
         }
