@@ -207,6 +207,7 @@ public:
 			SDL_RenderPresent(this->renderer);
 			SDL_Delay(delay);
 		}
+		
 	}
 
 
