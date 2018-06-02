@@ -172,6 +172,27 @@ int main(void) {
 	}
 
 	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
+	while (gaming) {
+		SDL_WaitEvent(&event);
+
+		switch (event.type) {
+		
+		case SDL_QUIT:
+			matching_end();
+			gaming = false;
+			break;
+		}
+
+		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+
+
+		
+		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
+		TTF_DrawText(renderer, enemy_name, Point(820, 550), font, color);
+		SDL_RenderPresent(renderer);
+		count++;
+	}
+
 	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
 
 	SDL_Quit();
