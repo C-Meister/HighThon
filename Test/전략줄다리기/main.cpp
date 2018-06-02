@@ -36,10 +36,10 @@ void ReceiveHandler(void) {
 			if (buffint != my_idx) {
 				printf("Ememy Turn\n");
 				if (e_num - 6 <= 8) {
-					e_num += 15;
+					e_num = 36- e_num;
 				}
 				else {
-					e_num = 39-e_num;
+					e_num = 51-e_num;
 				}
 
 				p1.x = 1920 - p1.x;
@@ -58,6 +58,7 @@ void ReceiveHandler(void) {
 			sscanf(msg, "match %[^n]s", buff);
 			enemy_name = string(buff);
 			event.user.data1 = buff;
+			SDL_PushEvent(&event);
 
 		}
 		else if (strstr(msg, "room ") != NULL) {
@@ -69,14 +70,15 @@ void ReceiveHandler(void) {
 		}
 		else if (strstr(msg, "exitroom") != NULL) {
 			event.user.code = EXITING;
+			SDL_PushEvent(&event);
 
 		}
 		else if (strstr(msg, "join_success ") != NULL) {
 			sscanf(msg, "join_success %d", &my_idx);
+			SDL_PushEvent(&event);
 		}
-		SDL_PushEvent(&event);
-		memset(&event, 0, sizeof(event));
-		event.type = SDL_USEREVENT;
+		/*memset(&event, 0, sizeof(event));
+		event.type = SDL_USEREVENT;*/
 		memset(msg, 0, sizeof(msg));
 		memset(buff, 0, sizeof(buff));
 	}
