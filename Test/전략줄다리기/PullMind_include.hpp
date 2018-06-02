@@ -56,7 +56,7 @@ extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
 extern vector<int> R_status;
-extern SDL_Point drag_first, drag_second;
+extern SDL_Point drag_first;
 
 
 void PrintPoint(SDL_Point p, string str);
@@ -359,10 +359,9 @@ public:
 				ysz = event.button.y - drag_first.y;
 			}
 			SDL_Rect area = Rect(x, y, xsz, ysz);
-			SDL_RenderDrawRect(renderer, &area);
 			
 			for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-				if ((*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER) {
+				if ((*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
 					(*it)->focused = true;
 				}
 			}

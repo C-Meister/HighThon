@@ -13,7 +13,7 @@
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 vector<int> R_status(5);
-SDL_Point drag_first, drag_second;
+SDL_Point drag_first = Point(-1, -1);
 
 queue<int> idQ;
 
@@ -221,14 +221,9 @@ int main(void) {
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	while (gamings) {
 		SDL_WaitEventTimeout(&event, 0);
-	
-		switch (event.type) {
-		case SDL_QUIT:
-			matching_end();
-			gamings = false;
-			break;
-		}
+
 		SDL_RenderClear(renderer);
+
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			if ((*it)->Callback(event)) {
 				break;
@@ -238,7 +233,7 @@ int main(void) {
 			Entity* entity = (*it);
 			if (entity->focused)
 				entity->drawFocus();
-			if (entity->flag == false && entity->type!=ENTITY_ENDROPE) {
+			if (entity->flag == false && entity->type != ENTITY_ENDROPE) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
 			}
@@ -259,6 +254,48 @@ int main(void) {
 			entity->RenderEntity();
 			entity->drawFocus();
 		}
+
+		switch (event.type) {
+		case SDL_QUIT:
+			matching_end();
+			gamings = false;
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			drag_first = Point(event.button.x, event.button.y);
+			break;
+		case SDL_MOUSEMOTION:
+			if (drag_first.x != -1) {
+				printf("mouse motion %d %d\n", event.motion.x, event.motion.y);
+				int x, y, xsz, ysz;
+				if (drag_first.x > event.motion.x) {
+					x = event.motion.x;
+					xsz = drag_first.x - event.motion.x;
+				}
+				else {
+					x = drag_first.x;
+					xsz = event.motion.x - drag_first.x;
+				}
+				if (drag_first.y > event.motion.y) {
+					y = event.motion.y;
+					ysz = drag_first.y - event.motion.y;
+				}
+				else {
+					y = drag_first.y;
+					ysz = event.motion.y - drag_first.y;
+				}
+				SDL_SetRenderDrawColor(renderer, 0, 10, 10, 30);
+				SDL_Rect area = Rect(x, y, xsz, ysz);
+				SDL_RenderDrawRect(renderer, &area);
+			}
+
+			break;
+		case SDL_MOUSEBUTTONUP:
+			SDL_Delay(1);
+			drag_first = Point(-1, -1);
+			break;
+		}
+		
+		
 		
 
 		Put_Text_Center(renderer, user_name, 75, 15, 210, 81, 255, 255, 255, 35, 1);           //내이름
