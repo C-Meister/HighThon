@@ -1,4 +1,4 @@
-﻿#include "include.hpp"
+﻿#include "include.h"
 //그래픽 관련 함수들
 TTF_Font * Font_Size[100];
 TTF_Font * Font_Size2[100];
