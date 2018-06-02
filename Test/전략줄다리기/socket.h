@@ -32,7 +32,7 @@ int connectServer(void) {
 
 	memset(&servAddr, 0, sizeof(servAddr));
 	servAddr.sin_family = AF_INET;
-	servAddr.sin_addr.s_addr = inet_addr("192.168.100.25");
+	servAddr.sin_addr.s_addr = inet_addr("192.168.2.130");
 	servAddr.sin_port = htons(1331);
 
 	if (connect(server, (SOCKADDR*)&servAddr, sizeof(servAddr)) == SOCKET_ERROR)

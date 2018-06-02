@@ -65,7 +65,9 @@ SDL_Rect Rect(int x, int y, int w, int h);
 void moveRect(SDL_Rect& rect, SDL_Point point);
 SDL_Point Point(int x, int y);
 void getPoints(VecP& v, SDL_Point p1, SDL_Point p2);
-
+double getAngle(SDL_Point p1, SDL_Point p2);
+vector<int> getStatus();
+void printStatus();
 
 
 
@@ -77,13 +79,15 @@ public:
 	SDL_Texture *img;
 	SDL_Renderer *renderer;
 	VecP v;
-	SDL_Point center, point= Point(-1, -1),point2;
+	MAP_ENTI m_e;
+	SDL_Point center, point2;
 	int id;
 	int power;
 	bool team;
 	bool flag = false;
-	bool focus = false;
+	bool focused = false;
 	int type;
+	double angle = 0;
 		
 
 
@@ -100,63 +104,125 @@ public:
 		SDL_QueryTexture(this->img, NULL, NULL, &this->src.w, &this->src.h);
 		vec_enti.push_back(this);
 		map_enti.insert(make_pair(id, this));
+		RenderEntity();
 	}
 	
 
 	void RenderEntity() {
-		SDL_RenderCopy(renderer, img, &src, &dst);
+		SDL_RenderCopyEx(renderer, img, &src, &dst, angle,NULL, SDL_FLIP_NONE);
 	}
 	void PrintInfo() {
 		PrintPoint(this->center, "center");
-		PrintPoint(this->point, "point");
 		PrintPoint(this->point2, "point2");
 		PrintRect(this->reg, "reg");
 		PrintRect(this->src, "src");
 		PrintRect(this->dst, "dst");
 	}
 	bool Callback(SDL_Event event) {
-		if (this->type)
+		if (type == ENTITY_BG)
 			return false;
 
 		if (flag)
 			return false;
 
-		switch (event.type) {
+		switch (event.type) { 
 		case SDL_MOUSEBUTTONDOWN:
-			cout << (int)event.button.button<<endl;
+		//	cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
-				if (event.button.button==SDL_BUTTON_LEFT&&SDL_PointInRect(&point2, &this->reg)) { 
-					cout << "영역" << endl;
-					this->point = this->center;
+			switch (this->type) {
+			case ENTITY_PLAYER:
+				if (event.button.button == SDL_BUTTON_LEFT && SDL_PointInRect(&point2, &this->reg)) {
+					this->focused = true;
+					cancelfocus();
 					return true;
 				}
-				
-				else if (event.button.button == SDL_BUTTON_RIGHT&&!compPoint(point, Point(-1, -1))) {
-				cout << "영역바깥 그리고 -1,-1이 아님" << endl;
-				getPoints(v, this->point, point2);
-				reverse(v.begin(), v.end());
-				flag = true;
-				this->center = point2;
-				moveRect(this->reg, center);
-				this->point = Point(-1, -1);
-				idQ.push(id);
-				return true;
+				else if (event.button.button == SDL_BUTTON_RIGHT && focused) {
+					getPoints(v, this->center, point2);
+					angle = getAngle(this->center, point2);
+					reverse(v.begin(), v.end());
+					flag = true;
+					this->center = point2;
+					moveRect(this->reg, center);
+					this->focused = false;
+					idQ.push(id);
+					removePlayer();
+					return false;
 				}
+				else {
+					this->focused = false;
+				}
+				break;
+		
+			}
 		}
 		return false;
 	}
 	void Animation(SDL_Point p) {
-		
-			moveRect(this->dst, p);
-
-		
+			center = p;
+			moveRect(this->dst, center);
+	}
+	void removePlayer() {
+		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+			if ((*it)->type == ENTITY_ROPE&& !SDL_PointInRect(&point2, &(*it)->reg)) {
+				(*it)->m_e.erase(id);
+			}
+		}
+		printStatus();
+	}
+	
+	void addPlayer() {
+		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+			if ((*it)->type == ENTITY_ROPE && SDL_PointInRect(&point2, &(*it)->reg)) {
+				(*it)->m_e.insert(make_pair(id, this));
+			}
+		}
+		printStatus();
+	}
+	void cancelfocus() {
+		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+			if ((*it)->type == ENTITY_PLAYER && (*it)->focused && (*it)->id != this->id)
+				(*it)->focused = false;
+		}
 	}
 
-};
+}; 
+void printStatus() {
 
+	vector<int>status = getStatus();
+	for (auto it = status.begin(); it != status.end(); it++) {
+		cout << *it << " ";
+	}
+	cout << endl;
+}
+vector<int> getStatus() {
+	vector<int> v;
+	for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+		if ((*it)->type == ENTITY_ROPE) {
+			int sum = 0;
+			MAP_ENTI m_e = (*it)->m_e;
+			for (auto it2 = m_e.begin(); it2 != m_e.end(); it2++) {
+				sum += (*it2).second->power;
+			}
+			v.push_back(sum);
+		}
+	}
+	return v;
+}
 
+double getAngle(SDL_Point p1, SDL_Point p2) {
+	int x1 = p1.x;
+	int y1 = p1.y;
+	int x2 = p2.x;
+	int y2 = p2.y;
 
+	int dx = x2 - x1;
+	int dy = y2 - y1;
 
+	double rad = atan2(dy, dx );
+	double degree = (rad * 180) / M_PI;
+
+	return degree;
+}
 void PrintPoint(SDL_Point p, string str = "") {
 	cout << str << "	x: " << p.x << ", " << "y: " << p.y << endl;
 }
