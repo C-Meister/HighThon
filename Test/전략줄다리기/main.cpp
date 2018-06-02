@@ -14,8 +14,6 @@ int main(void) {
 	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100,100, 100,100),Rect(100,100,100,100), 1, 1, 1);
 
 	entity->RenderEntity();
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	SDL_RenderDrawPoint(renderer, 3, 3);
 	SDL_RenderPresent(renderer);
 	bool quit = false;
 	SDL_Event event;
@@ -23,7 +21,6 @@ int main(void) {
 		SDL_WaitEventTimeout(&event, 100);
 		entity->Callback(event);
 	}
-
 	
 
 	

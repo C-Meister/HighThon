@@ -21,6 +21,9 @@
     <ClCompile Include="HitMind_Graphic.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="HitMind_Console.c">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PullMind_include.hpp">
