@@ -74,6 +74,7 @@ public:
 	int power;
 	bool team;
 	bool flag = false;
+	bool focus = false;
 		
 
 
@@ -102,18 +103,23 @@ public:
 		PrintRect(this->src, "src");
 		PrintRect(this->dst, "dst");
 	}
-	void Callback(SDL_Event event) {
+	bool Callback(SDL_Event event) {
 		if (flag)
-			return;
+			return false;
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
+			cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
-			if (SDL_PointInRect(&point2, &this->reg)) { //�������� ��
-				cout << "����" << endl;
-				this->point = this->center;
-			}
-			else if (!compPoint(point, Point(-1, -1))) {
-				cout << "�����ٱ� �׸��� -1,-1�� �ƴ�" << endl;
+				if (event.button.button==SDL_BUTTON_LEFT&&SDL_PointInRect(&point2, &this->reg)) { 
+					cout << "영역" << endl;
+					this->point = this->center;
+					return true;
+				}
+				
+
+			
+				else if (event.button.button == SDL_BUTTON_RIGHT&&!compPoint(point, Point(-1, -1))) {
+				cout << "영역바깥 그리고 -1,-1이 아님" << endl;
 				getPoints(v, this->point, point2);
 				reverse(v.begin(), v.end());
 				flag = true;
@@ -121,8 +127,10 @@ public:
 				moveRect(this->reg, center);
 				this->point = Point(-1, -1);
 				idQ.push(id);
-			}
+				return true;
+				}
 		}
+		return false;
 	}
 	void Animation(SDL_Point p) {
 		

@@ -35,7 +35,7 @@ int main(void) {
 	bool quit = false;
 	SDL_Event event;
 	while (!quit) {
-		SDL_WaitEventTimeout(&event, 0);
+		SDL_WaitEventTimeout(&event,10);
 		SDL_RenderClear(renderer);
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
@@ -54,15 +54,16 @@ int main(void) {
 			else {
 				SDL_Point p = entity->v.back(); entity->v.pop_back();
 				entity->Animation(p);
+				idQ.push(id);
 			}
 			entity->RenderEntity();
-			idQ.push(id);
 		}
 
 	
 		
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-			(*it)->Callback(event);
+			if ((*it)->Callback(event)) { break; }
+				
 		}
 		SDL_RenderPresent(renderer);
 	}
