@@ -6,20 +6,15 @@
 
 #define ErrorHandling(X) printf(X)
 
-SOCKET server;
+#define SOCKET_EVENT 7
+enum {
+	MATCHING, EXITING, MOVE
+};
 
+SOCKET server;
 int status = 0;
 char lastrecv[128] = "";
-
-void ReceiveHandler(void) {
-	char msg[255] = "";
-	while (recv(server, msg, sizeof(msg), 0) > 0) {
-		printf("%s\n", msg);
-		strcpy(lastrecv, msg);
-		memset(msg, 0, sizeof(msg));
-	}
-}
-int connectServer(void) {
+int connectServer() {
 
 	WSADATA wsaData;
 	SOCKADDR_IN servAddr;
@@ -50,7 +45,6 @@ int connectServer(void) {
 
 	printf("Message from server: %s \n", message);
 
-	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
 	return 0;
 }
 

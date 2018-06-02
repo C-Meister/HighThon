@@ -5,7 +5,7 @@
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
 #undef main 
-
+#define SOOHAN
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 
@@ -26,10 +26,40 @@ void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
 
+
+void ReceiveHandler(void) {
+	char msg[255] = "";
+	SDL_Event event;
+	char buff[100] = "";
+	int buffint = 0;
+	event.type = SDL_USEREVENT;
+	event.user.code = 8;
+	while (recv(server, msg, sizeof(msg), 0) > 0) {
+
+		printf("%s\n", msg);
+		if (strstr(msg, "match ") != NULL) {
+			event.user.type = MATCHING;
+			sscanf(msg, "match %[^n]s", buff);
+			event.user.data1 = buff;
+
+		}
+		else if (strstr(msg, "room ") != NULL) {
+			sscanf(msg, "room %d", &buffint);
+			send(server, "join %d", strlen(msg), buffint);
+		}
+		
+		SDL_PushEvent(&event);
+		memset(msg, 0, sizeof(msg));
+	}
+}
+
 int main(void) {
 
 #ifdef SOOHAN
-	
+
+	connectServer();
+	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
+	bool gaming = false;
 	bool quit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
@@ -72,7 +102,7 @@ int main(void) {
 			else if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER && !str.empty()) { //엔터입력
 				matching_start(str.c_str());
 				quit = true;
-
+				gaming = true;
 			}
 			break;
 		case SDL_TEXTINPUT:
@@ -95,10 +125,22 @@ int main(void) {
 	}
 
 	
-	bool gaming = false;
 	SDL_Texture *outimage = LoadTexture(renderer, ".\\resources\\image\\out.jpg");
 
-	while (!gaming) {
+	RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+
+	while (gaming) {
+		SDL_WaitEvent(&event);
+		switch (event.type) {
+		case SDL_USEREVENT:
+			if (event.user.type == MATCHING) {
+				printf("match success\n");
+				while (1) {
+					Sleep(100);
+				}
+			}
+			break;
+		}
 		RenderTextureXYWH(renderer, outimage, 0, 0, Display_X, Display_Y);
 
 		SDL_RenderPresent(renderer);
