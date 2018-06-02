@@ -68,8 +68,6 @@ int main(void) {
 	HitMind_TTF_Init();
 	HitMind_TTF2_Init();
 
-	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)connectServer, NULL, 0, NULL);
-
 	int Display_X = 1920;
 	int Display_Y = 1080;
 	SDL_Window* window= SDL_CreateWindow("HitMind_2", 0,0, 1920,1080, SDL_WINDOW_SHOWN);
