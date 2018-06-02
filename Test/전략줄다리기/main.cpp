@@ -45,12 +45,16 @@ void ReceiveHandler(void) {
 
 		}
 		else if (strstr(msg, "room ") != NULL) {
-			sscanf(msg, "room %d", &buffint);
-			send(server, "join %d", strlen(msg), buffint);
+			msg[0] = 'j';
+			msg[1] = 'o';
+			msg[2] = 'i';
+			msg[3] = 'n';
+			send(server, msg, strlen(msg), 0);
 		}
 		
 		SDL_PushEvent(&event);
 		memset(msg, 0, sizeof(msg));
+		memset(buff, 0, sizeof(buff));
 	}
 }
 
