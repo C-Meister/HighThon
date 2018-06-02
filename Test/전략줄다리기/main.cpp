@@ -52,7 +52,7 @@ void ReceiveHandler(void) {
 			
 			if (buffint != my_idx) {
 				printf("Ememy Turn\n");
-				if (e_num - 7 <= 8) {
+				if (e_num - 6 <= 8) {
 					e_num += 22;
 				}
 				else {
@@ -61,7 +61,7 @@ void ReceiveHandler(void) {
 			}
 			else
 				printf("My Turn\n");
-			
+			printf("data : %d %d %d %d %d %d\n", buffint, e_num, p1.x, p1.y, p2.x, p2.y);
 			moveEntity(e_num, p1, p2);
 		}
 		else if (strstr(msg, "match ") != NULL) {
