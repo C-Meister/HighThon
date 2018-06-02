@@ -42,6 +42,10 @@ class Entity;
 #define ALLY 0
 #define TEAM_DEFAULT ALLY
 
+#define ENTITY_PLAYER 0
+#define ENTITY_ROPE 1
+#define ENTITY_BG 2
+
 typedef vector<SDL_Point> VecP;
 typedef vector<Entity *> VEC_ENTI;
 typedef map<int, Entity *> MAP_ENTI;
@@ -75,10 +79,11 @@ public:
 	bool team;
 	bool flag = false;
 	bool focus = false;
+	int type;
 		
 
 
-	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power=POWER_DEFAULT ,  bool team = TEAM_DEFAULT) {
+	Entity(SDL_Renderer * renderer,string filename, SDL_Rect dst, SDL_Rect reg, int id, int power = POWER_DEFAULT, bool team = TEAM_DEFAULT, int type = ENTITY_PLAYER) {
 		this->power = power;
 		this->renderer = renderer;
 		this->team = team;
@@ -87,10 +92,12 @@ public:
 		this->dst = dst;
 		this->reg = reg;
 		this->center = Point(dst.x + dst.w / 2, dst.y + dst.h / 2);
+		this->type = type;
 		SDL_QueryTexture(this->img, NULL, NULL, &this->src.w, &this->src.h);
 		vec_enti.push_back(this);
 		map_enti.insert(make_pair(id, this));
 	}
+	
 
 	void RenderEntity() {
 		SDL_RenderCopy(renderer, img, &src, &dst);
@@ -104,8 +111,12 @@ public:
 		PrintRect(this->dst, "dst");
 	}
 	bool Callback(SDL_Event event) {
+		if (this->type)
+			return false;
+
 		if (flag)
 			return false;
+
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
 			cout << (int)event.button.button<<endl;
@@ -116,8 +127,6 @@ public:
 					return true;
 				}
 				
-
-			
 				else if (event.button.button == SDL_BUTTON_RIGHT&&!compPoint(point, Point(-1, -1))) {
 				cout << "영역바깥 그리고 -1,-1이 아님" << endl;
 				getPoints(v, this->point, point2);
