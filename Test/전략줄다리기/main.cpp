@@ -62,7 +62,6 @@ void ReceiveHandler(void) {
 				p1.x = 1920 - p1.x;
 				p2.x = 1920 - p2.x;
 
-
 			}
 			else
 				printf("My Turn\n");
