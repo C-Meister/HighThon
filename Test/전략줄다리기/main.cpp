@@ -13,6 +13,7 @@
 VEC_ENTI vec_enti;
 MAP_ENTI map_enti;
 vector<int> R_status(5);
+SDL_Point drag_first, drag_second;
 
 queue<int> idQ;
 
@@ -263,6 +264,8 @@ int main(void) {
 		}
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
+			if (entity->focused)
+				entity->drawFocus();
 			if (entity->flag == false && entity->type!=ENTITY_ENDROPE) {
 				//�ִϸ��̼� ���� �ƴ�
 				entity->RenderEntity();
@@ -282,14 +285,12 @@ int main(void) {
 				idQ.push(id);
 			}
 			entity->RenderEntity();
+			entity->drawFocus();
 		}
 		
 		
 		SDL_RenderPresent(renderer);
 	}
 
-
-
-#endif
 
 }

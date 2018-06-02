@@ -56,6 +56,8 @@ extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
 extern vector<int> R_status;
+extern SDL_Point drag_first, drag_second;
+
 
 void PrintPoint(SDL_Point p, string str);
 bool compPoint(SDL_Point p1, SDL_Point p2);
@@ -112,29 +114,7 @@ void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font
 	dst.h = src.h;
 	SDL_RenderCopy(renderer, texture, &src, &dst);
 }
-int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
-{
-	if (m == 1)
-		TTF_DrawText(renderer, Font_Size[size], unicode, x, y, color);			//Text를 적음
-	else if (m == 2)
-		TTF_DrawText(renderer, Font_Size2[size], unicode, x, y, color);
 
-
-		IMG_Quit();// IMG 종료
-		return nullptr;// 널포인터 반환
-	}
-	SDL_Surface* Surface = IMG_Load(file);//서피스에 이미지로드
-	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
-	SDL_FreeSurface(Surface);// 서피스 메모리해제
-
-	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
-
-		IMG_Quit();// IMG 종료
-		return nullptr;// 널포인터 반환
-	}
-	IMG_Quit();// IMG 종료
-	return Texture;// Texture포인터 반환
-}
 
 void Put_Text_Center(SDL_Renderer* Renderer, string sentence, int x, int y, int w, int h, int r, int g, int b, int size, int m) {
 
@@ -325,6 +305,10 @@ public:
 
 		switch (event.type) {
 		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_LEFT) {
+				drag_first = Point(event.button.x, event.button.y);
+				
+			}
 			//	cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
 			switch (this->type) {
@@ -335,6 +319,8 @@ public:
 					return true;
 				}
 				else if (event.button.button == SDL_BUTTON_RIGHT && focused) {
+					if (point2.y < 120)
+						return false;
 					getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
@@ -354,6 +340,33 @@ public:
 				break;
 
 			}
+		case SDL_MOUSEBUTTONUP:
+			int x, y, xsz, ysz;
+			if (drag_first.x > event.button.x) {
+				x = event.button.x;
+				xsz = drag_first.x - event.button.x;
+			}
+			else {
+				x = drag_first.x;
+				xsz = event.button.x - drag_first.x;
+			}
+			if (drag_first.y > event.button.y) {
+				y = event.button.y;
+				ysz = drag_first.y - event.button.y;
+			}
+			else {
+				y = drag_first.y;
+				ysz = event.button.y - drag_first.y;
+			}
+			SDL_Rect area = Rect(x, y, xsz, ysz);
+			SDL_RenderDrawRect(renderer, &area);
+			
+			for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
+				if ((*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER) {
+					(*it)->focused = true;
+				}
+			}
+
 		}
 		return false;
 	}
@@ -384,6 +397,17 @@ public:
 			if ((*it)->type == ENTITY_PLAYER && (*it)->focused && (*it)->id != this->id)
 				(*it)->focused = false;
 		}
+	}
+
+	void drawFocus() {
+		SDL_SetRenderDrawColor(renderer, 60, 120, 120, 255);
+		for (int i = 0; i < 72; i++) {
+			float x = cos((i * 5)*(M_PI / 180))*40 + center.x;
+			float y = sin((i * 5)*(M_PI / 180))*40 + center.y;
+			SDL_Rect rect = Rect(x, y, 5, 5);
+			SDL_RenderFillRect(this->renderer, &rect);
+		}
+		
 	}
 
 };
