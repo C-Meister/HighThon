@@ -1,7 +1,7 @@
 #include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
-#include "main2.h"
+//#include "main2.h"
 
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
