@@ -329,7 +329,7 @@ public:
 				else if (event.button.button == SDL_BUTTON_RIGHT && focused && team != ENEMY) {
 					if (point2.y < 120)
 						return false;
-					/*getPoints(v, this->center, point2);
+					getPoints(v, this->center, point2);
 					angle = getAngle(this->center, point2);
 					if (team == ENEMY)
 						angle += 180;
@@ -339,9 +339,7 @@ public:
 					moveRect(this->reg, center);
 					this->focused = false;
 					idQ.push(id);
-					removePlayer();*/
-				//	moveEntity(id,center, point2);
-					sendEntity(id, center, point2);
+					removePlayer();
 					return false;
 				}
 				else {
@@ -371,7 +369,7 @@ public:
 			SDL_Rect area = Rect(x, y, xsz, ysz);
 			
 			for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
-				if ((*it)->flag==false&&(*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
+				if ((*it)->team!=ENEMY&&(*it)->flag==false&&(*it)->center.x > area.x && (*it)->center.x < area.x + area.w && (*it)->center.y > area.y && (*it)->center.y < area.y + area.h && (*it)->type == ENTITY_PLAYER && drag_first.x!= -1) {
 					(*it)->focused = true;
 				}
 			}
@@ -488,7 +486,7 @@ void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 	e->focused = false;
 	idQ.push(id);
 	e->removePlayer();
-	printf("GetEntity\n");
+	cout << "moveEntity" <<id<< endl;
 	return;
 }
 void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
