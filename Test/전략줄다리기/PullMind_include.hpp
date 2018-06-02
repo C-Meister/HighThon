@@ -98,6 +98,21 @@ int TTF_DrawText(SDL_Renderer *Renderer, TTF_Font* Font, Uint16* sentence, int x
 	SDL_DestroyTexture(Texture);
 	return Src.w;// 출력할 문자열의 너비를 반환
 }
+void TTF_DrawText(SDL_Renderer* renderer, string text, SDL_Point point, TTF_Font *font, SDL_Color color = { 0,0,0,0 }) {
+	SDL_Surface * surface = TTF_RenderUTF8_Blended(font, text.c_str(), color);
+	SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
+	SDL_Rect src;
+	src.x = 0;
+	src.y = 0;
+	SDL_QueryTexture(texture, NULL, NULL, &src.w, &src.h);
+	SDL_Rect dst;
+	dst.x = point.x;
+	dst.y = point.y;
+	dst.w = src.w;
+	dst.h = src.h;
+	SDL_RenderCopy(renderer, texture, &src, &dst);
+}
 int PutText_Unicode(SDL_Renderer * renderer, Uint16 * unicode, unsigned int x, unsigned int y, int size, SDL_Color color, int m)
 {
 	if (m == 1)
@@ -118,7 +133,8 @@ SDL_Texture * LoadTexture(SDL_Renderer * Renderer, const char *file) { // 텍스
 	SDL_Texture* Texture = SDL_CreateTextureFromSurface(Renderer, Surface);//서피스로부터 텍스쳐 생성
 	SDL_FreeSurface(Surface);// 서피스 메모리해제
 	if (Texture == nullptr) {// 텍스쳐 생성 실패시 if문실행
-
+	}
+}
 // --------------
 class Entity {
 
