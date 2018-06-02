@@ -1,12 +1,8 @@
 #include "SDL/SDL.h"
 #include "socket.h"
 #include "PullMind_include.hpp"
-<<<<<<< HEAD
 #include "main2.h"
 
-=======
-#include "include.h"
->>>>>>> 493adeb589c93d841757f37f360e4f50ec865efa
 #pragma comment (lib, "ws2_32.lib")
 #pragma comment (lib , "lib/SDL2.lib")
 #undef main 
@@ -32,13 +28,13 @@ int main(void) {
 
 	int backspacehappen = false;
 	wchar_t change_password[5][256] = { L"", L"", L"", L"" };
-	int enter = false; // ¿£ÅÍ°¡ ÀÔ·ÂµÇ¾ú´ÂÁö ¾Ë·ÁÁÖ´Â ºÒ º¯¼ö
-	int textinput = true; // ±ÛÀÚ°¡ ÇÏ³ª ´õ ÀÔ·ÂµÇ¾ú´ÂÁö ¾Ë·ÁÁÖ´Â ºÒ º¯¼ö
-	int hangeul = false; // ÇöÀç ÀÔ·ÂÇÏ°í ÀÖ´Â ±ÛÀÚ°¡ ÇÑ±ÛÀÎÁö ¾Æ´ÑÁö ½Äº°ÇØÁÖ´Â ºÒ º¯¼ö
-	int hanyeong = false; // ÇÑ¿µÅ°»óÅÂ¿¡ ¾²ÀÌ´Â ºÒ º¯¼ö
-	wchar_t wchar[2] = L""; // ÇÑ±ÛÀÚ ÇÑ±ÛÀÚ ÀÔ·Â¿¡ ¾²ÀÌ´Â ¹è¿­
+	int enter = false; // ï¿½ï¿½ï¿½Í°ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	int textinput = true; // ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ï³ï¿½ ï¿½ï¿½ ï¿½Ô·ÂµÇ¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ë·ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	int hangeul = false; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½Ï°ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½Ú°ï¿½ ï¿½Ñ±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½ï¿½ï¿½ ï¿½Äºï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	int hanyeong = false; // ï¿½Ñ¿ï¿½Å°ï¿½ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	wchar_t wchar[2] = L""; // ï¿½Ñ±ï¿½ï¿½ï¿½ ï¿½Ñ±ï¿½ï¿½ï¿½ ï¿½Ô·Â¿ï¿½ ï¿½ï¿½ï¿½Ì´ï¿½ ï¿½è¿­
 	int slice = 0;
-	wchar_t name_put[255] = L"";	//ÀÌ¸§ ÀÔ·Â ¹è¿­
+	wchar_t name_put[255] = L"";	//ï¿½Ì¸ï¿½ ï¿½Ô·ï¿½ ï¿½è¿­
 
 
 	Display_X = 1920;
@@ -60,9 +56,9 @@ int main(void) {
 		RenderTextureXYWH(renderer, inputimage, 710, 470, 500, 141);
 		switch (event.type)
 		{
-		case SDL_TEXTINPUT: // Ã¤ÆÃ ÀÔ·Â ÀÌº¥Æ®
-							//	printf("¾Ó");
-			if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// ÇÑ±ÛÀÏ °æ¿ì
+		case SDL_TEXTINPUT: // Ã¤ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Ìºï¿½Æ®
+							//	printf("ï¿½ï¿½");
+			if (hanyeong == true && (event.text.text[0] == -29 || event.text.text[0] + 256 >= 234 && event.text.text[0] + 256 <= 237))// ï¿½Ñ±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 			{
 				wcscpy(wchar, L"");
 				int sum = (event.text.text[0] + 22) * 64 * 64 + (event.text.text[1] + 128) * 64 + event.text.text[2] + 41088;
@@ -74,9 +70,9 @@ int main(void) {
 				else
 					slice = 1 + !((wchar[0] - 0xac00) % 28);
 			}
-			else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// ¿µ¾î ÀÔ·Â ½Ã
+			else if (!((event.text.text[0] == 'c' || event.text.text[0] == 'C') && (event.text.text[0] == 'v' || event.text.text[0] == 'V') && SDL_GetModState() & KMOD_CTRL)) {// ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½ï¿½
 				wcscpy(wchar, L"");
-				swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text ¹®ÀÚ¿­ ±×³É ¿¬°á½ÃÄÑ¹ö¸²
+				swprintf(wchar, sizeof(wchar) / sizeof(wchar_t), L"%hs", event.text.text);// event.text.text ï¿½ï¿½ï¿½Ú¿ï¿½ ï¿½×³ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½ï¿½ï¿½
 				if (wcslen(name_put) < 255)
 					wcscat(name_put, wchar);
 				hangeul = false;
@@ -85,13 +81,13 @@ int main(void) {
 			textinput = true;
 			break;
 		case SDL_KEYDOWN:
-			//	printf("¾Ó2");
+			//	printf("ï¿½ï¿½2");
 			if (event.key.keysym.sym == SDLK_RETURN || event.key.keysym.sym == SDLK_KP_ENTER) {
 				if (hangeul == true && enter == false)
 					enter = true;
 				else {
 
-					printf("¿£ÅÍ");
+					printf("ï¿½ï¿½ï¿½ï¿½");
 
 
 
@@ -110,7 +106,7 @@ int main(void) {
 			}
 			else if (event.key.keysym.sym == SDLK_RALT)
 				hanyeong = !(hanyeong);
-			else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(name_put) > 0)// Å°º¸µå ¹é½ºÆäÀÌ½º°í ¹è¿­ÀÇ ±æÀÌ°¡ 1ÀÌ»óÀÏ¶§
+			else if (event.key.keysym.sym == SDLK_BACKSPACE && wcslen(name_put) > 0)// Å°ï¿½ï¿½ï¿½ï¿½ ï¿½é½ºï¿½ï¿½ï¿½Ì½ï¿½ï¿½ï¿½ ï¿½è¿­ï¿½ï¿½ ï¿½ï¿½ï¿½Ì°ï¿½ 1ï¿½Ì»ï¿½ï¿½Ï¶ï¿½
 			{
 				name_put[wcslen(name_put) - 1] = 0;
 				backspacehappen = true;
@@ -141,10 +137,6 @@ int main(void) {
 
 	SDL_Window *window = SDL_CreateWindow("hi", 100, 100, 640, 480, SDL_WINDOW_SHOWN);
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 493adeb589c93d841757f37f360e4f50ec865efa
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
 	Entity *entity = new Entity(renderer, "./resources/image/porg.jpg", Rect(100, 100, 100, 100), Rect(100, 100, 100, 100), 1, 1, 1);
@@ -164,7 +156,7 @@ int main(void) {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
 			if (entity->flag == false) {
-				//¾Ö´Ï¸ÞÀÌ¼Ç ÁßÀÌ ¾Æ´Ô
+				//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½
 				entity->RenderEntity();
 			}
 		}
