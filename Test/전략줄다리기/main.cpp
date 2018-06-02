@@ -84,6 +84,7 @@ int main(void) {
 	bool fquit = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
+	SDL_Color white_color = { 255,0,0 ,0 };
 	TTF_Init();
 	SDL_Init(SDL_INIT_EVERYTHING);
 	HitMind_TTF_Init();
@@ -204,12 +205,12 @@ int main(void) {
 			break;
 		}
 
-		RenderTextureXYWH(renderer, lobiimage, 0, 0, Display_X, Display_Y);
+		RenderTextureXYWH(renderer,outimage, 0, 0, Display_X, Display_Y);
 
 
 		
-		TTF_DrawText(renderer, user_name, Point(520, 550), font, color);
-		TTF_DrawTextUnicode(renderer, enemy_name, Point(820, 550), font, color);
+		TTF_DrawText(renderer, user_name, Point(70, 30), font, white_color);           //내이름
+		TTF_DrawText(renderer, enemy_name, Point(1750, 30), font, white_color);   //적이름
 		SDL_RenderPresent(renderer);
 		count++;
 	}
