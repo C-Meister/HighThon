@@ -111,7 +111,7 @@ public:
 			cout << (int)event.button.button<<endl;
 			point2 = Point(event.button.x, event.button.y);
 				if (event.button.button==SDL_BUTTON_LEFT&&SDL_PointInRect(&point2, &this->reg)) { 
-					cout << "¿µ¿ª" << endl;
+					cout << "ì˜ì—­" << endl;
 					this->point = this->center;
 					return true;
 				}
@@ -119,7 +119,7 @@ public:
 
 			
 				else if (event.button.button == SDL_BUTTON_RIGHT&&!compPoint(point, Point(-1, -1))) {
-				cout << "¿µ¿ª¹Ù±ù ±×¸®°í -1,-1ÀÌ ¾Æ´Ô" << endl;
+				cout << "ì˜ì—­ë°”ê¹¥ ê·¸ë¦¬ê³  -1,-1ì´ ì•„ë‹˜" << endl;
 				getPoints(v, this->point, point2);
 				reverse(v.begin(), v.end());
 				flag = true;
@@ -166,7 +166,7 @@ SDL_Rect Rect(int x, int y, int w, int h) {
 	SDL_Rect rect = { x,y,w,h };
 	return rect;
 }
-void moveRect(SDL_Rect& rect, SDL_Point point) {//point°¡ ÁßÁ¡ÁÂÇ¥
+void moveRect(SDL_Rect& rect, SDL_Point point) {//pointï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¥
 	rect = { point.x - rect.w / 2,point.y - rect.h / 2,rect.w,rect.h };
 }
 SDL_Point Point(int x, int y) {
