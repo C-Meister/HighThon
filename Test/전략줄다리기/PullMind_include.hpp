@@ -334,7 +334,7 @@ public:
 				else if (flag==false && event.button.button == SDL_BUTTON_RIGHT && focused && team != ENEMY) {
 					if (point2.y < 120)
 						return false;
-					Sleep(20);
+					//Sleep(20);
 					sendEntity(id, center, point2);
 					moveEntity(id, center, point2);
 					return false;
