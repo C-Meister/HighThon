@@ -82,6 +82,7 @@ int main(void) {
 
 	connectServer();
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
+	int cnt = 0;
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
@@ -237,6 +238,7 @@ int main(void) {
 				break;
 			}
 		}
+		Entity *temp;
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
 			
@@ -246,9 +248,14 @@ int main(void) {
 			}
 			if (entity->focused) {
 				entity->drawFocus();
-				entity->drawInfo();
+				temp = entity;
+				cnt++;
 			}
 		}
+		if (cnt == 1) {
+			temp->drawInfo("", 0);
+		}
+		cnt = 0;
 		if (is30) {
 			int size = idQ.size();
 			for (int i = 0; i < size; i++) {
