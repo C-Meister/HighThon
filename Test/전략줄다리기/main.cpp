@@ -13,7 +13,8 @@ vector<int> R_status(5);
 SDL_Point drag_first = Point(-1, -1);
 
 queue<int> idQ;
-
+int myscore=0;
+int enemyscore=0;
 
 
 string user_name;

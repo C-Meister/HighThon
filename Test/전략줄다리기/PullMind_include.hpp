@@ -54,7 +54,7 @@ typedef map<int, Entity *> MAP_ENTI;
 typedef wchar_t Unicode;
 typedef pair<int, int> ii;
 
-
+extern int myscore, enemyscore;
 extern VEC_ENTI vec_enti;
 extern MAP_ENTI map_enti;
 extern queue<int> idQ;
@@ -290,6 +290,26 @@ public:
 		if (type == ENTITY_ROPE) {
 			if (center.x < rope_boundary.first || rope_boundary.second < center.x) {
 				type = ENTITY_ENDROPE;
+				if (team == ENEMY)
+					enemyscore++;
+				else
+					myscore++;
+				bool ff = false;
+				int w, h;
+				SDL_Color color = { 255,0,0,0 };
+				if (enemyscore == 3) {
+					Put_Text_Center(renderer, "패배", 1920 / 2 - w / 2, 1080 / 2 - h / 2, w, h, color, 50, 10);
+					ff = true;
+				}
+				else if(myscore==3) {
+					Put_Text_Center(renderer, "승리", 1920 / 2 - w / 2, 1080 / 2 - h / 2, w, h, color, 50, 10);
+					ff = true;
+				}
+				if (ff) {
+					SDL_RenderPresent(renderer);	
+					SDL_Delay(2000);
+					exit(0);
+				}
 				return false;
 			}
 			int dx = center.x;
