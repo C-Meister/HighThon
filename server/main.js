@@ -25,7 +25,6 @@ var server = net.createServer(function (client){
     client.write(toHangul('한글'));
     client.status = 0;
     handler.handler(client);  
-
     client.on('close', function(err){
         switch(client.status){
             case 0:

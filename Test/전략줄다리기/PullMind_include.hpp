@@ -334,19 +334,9 @@ public:
 				else if (flag==false && event.button.button == SDL_BUTTON_RIGHT && focused && team != ENEMY) {
 					if (point2.y < 120)
 						return false;
-					
-					getPoints(v, this->center, point2);
-					angle = getAngle(this->center, point2);
-					if (team == ENEMY)
-						angle += 180;
-					reverse(v.begin(), v.end());
-					flag = true;
-					this->center = point2;
-					moveRect(this->reg, center);
-					this->focused = false;
-					idQ.push(id);
-					removePlayer();
+					Sleep(20);
 					sendEntity(id, center, point2);
+					moveEntity(id, center, point2);
 					return false;
 				}
 				else {
@@ -395,7 +385,7 @@ public:
 			}
 		}
 		R_status = getStatus();
-		printStatus();
+		//printStatus();
 	}
 
 	void addPlayer() {
@@ -406,7 +396,7 @@ public:
 			}
 		}
 		R_status = getStatus();
-		printStatus();
+		//printStatus();
 	}
 	void cancelfocus() {
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
@@ -507,14 +497,12 @@ void moveEntity(int id, SDL_Point p1, SDL_Point p2) {
 	e->focused = false;
 	idQ.push(id);
 	e->removePlayer();
-	cout << "moveEntity" <<id<< endl;
 	return;
 }
 void sendEntity(int id, SDL_Point p1, SDL_Point p2) {
 	char sendQuery[64] = "";
-	// 7 ~ 21 22 ~ 36
-	printf("move %d %d %d %d %d %d ", my_idx, id, p1.x, p1.y, p2.x, p2.y);
-	sprintf(sendQuery, "move %d %d %d %d %d %d ",my_idx, id, p1.x, p1.y, p2.x, p2.y);
+	// 7 ~ 21 22 ~ 36 // 4+1+1+1+2+1+4+1+4+1+4+1+4
+	sprintf(sendQuery, "move %d %2d %4d %4d %4d %4d\n",my_idx, id, p1.x, p1.y, p2.x, p2.y);
 	/*printf("%d\n", (int)strlen(sendQuery));*/
 	cout << "sended : "<< sendQuery << endl << endl;
 	send(server, sendQuery, strlen(sendQuery), 0);

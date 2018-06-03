@@ -24,25 +24,26 @@ void ReceiveHandler(void) {
 	char buff[100] = "";
 	SDL_Point p1, p2;
 	int e_num;
+	int size = 0;
 	int buffint = 0;
 	event.type = SDL_USEREVENT;
-	while (recv(server, msg, 30, 0) > 0) {
+	while ((size = recv(server, msg, 255, 0)) > 0) {
+		printf("%d\n", size);
 		printf("%s\n", msg);
-		//printf("%s\n", msg);
 		if (msg[3] == 'e' && msg[2] == 'v') {
 
-			sscanf(msg, "move %d %d %d %d %d %d", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
+			sscanf(msg, "move %d %d %d %d %d %d ", &buffint, &e_num, &p1.x, &p1.y, &p2.x, &p2.y);
 			if (buffint == my_idx)
 				continue;
-				if (e_num - 6 <= 8) {
-					e_num = 36 - e_num;
-				}
-				else {
-					e_num = 51 - e_num;
-				}
-				p1.x = 1920 - p1.x;
-				p2.x = 1920 - p2.x;
-			printf("processed data : %d %d %d %d %d %d\n", buffint, e_num, p1.x, p1.y, p2.x, p2.y);
+			if (e_num - 6 <= 8) {
+				e_num = 36 - e_num;
+			}
+			else {
+				e_num = 51 - e_num;
+			}
+			p1.x = 1920 - p1.x;
+			p2.x = 1920 - p2.x;
+			//printf("processed data : %d %d %d %d %d %d\n", buffint, e_num, p1.x, p1.y, p2.x, p2.y);
 			moveEntity(e_num, p1, p2);
 		}
 		else if (strstr(msg, "match ") != NULL) {
