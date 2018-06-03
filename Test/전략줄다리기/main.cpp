@@ -85,7 +85,7 @@ int main(void) {
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
-	bool is30 = true;
+	bool is30 = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	SDL_Color white_color = { 255,0,0 ,0 };
