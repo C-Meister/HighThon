@@ -458,17 +458,26 @@ public:
 		}
 	}
 
-	void drawInfo() {
+	void drawInfo(string str, int flag = 0) {
 		TTF_Init();
 		TTF_Font* font = TTF_OpenFont(".\\font\\NanumGothic.ttf", 19);
-		string str1 = "ID: " + to_string(this->id);
-		string str2 = "Power: " + to_string(this->power);
-		SDL_Color color = { 0,0,0,255 };
-		SDL_Rect area = Rect(670, 15,180,80);
+		if (!flag) {
+			string str1 = "ID: " + to_string(this->id);
+			string str2 = "Power: " + to_string(this->power);
+			SDL_Color color = { 0,0,0,255 };
+			SDL_Rect area = Rect(670, 15, 180, 80);
 
-		SDL_RenderDrawRect(renderer, &area);
-		TTF_DrawTextUnicode(renderer, str1, Point(680, 20), font, color);
-		TTF_DrawTextUnicode(renderer, str2, Point(680, 40), font, color);
+			SDL_RenderDrawRect(renderer, &area);
+			TTF_DrawTextUnicode(renderer, str1, Point(680, 20), font, color);
+			TTF_DrawTextUnicode(renderer, str2, Point(680, 40), font, color);
+		}
+		else {
+			SDL_Color color = { 0,0,0,255 };
+			SDL_Rect area = Rect(670, 15, 180, 80);
+
+			SDL_RenderDrawRect(renderer, &area);
+			TTF_DrawTextUnicode(renderer, str, Point(680, 20), font, color);
+		}
 
 	}
 

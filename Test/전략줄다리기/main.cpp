@@ -83,10 +83,11 @@ int main(void) {
 
 	connectServer();
 	_beginthreadex(NULL, 0, (_beginthreadex_proc_type)ReceiveHandler, NULL, 0, NULL);
+	int cnt = 0;
 	bool loading = false;
 	bool gamings = false;
 	bool fquit = false;
-	bool is30 = true;
+	bool is30 = false;
 	SDL_Window * Window = NULL;
 	SDL_Color color = { 0,0,0 ,0 };
 	SDL_Color white_color = { 255,0,0 ,0 };
@@ -209,12 +210,25 @@ int main(void) {
 	
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 8-i; j++) {
-			entity[i * 8 + j] = new Entity(renderer, "./resources/entity/mob_11.png", Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
+			int tmp1 = rand() % 5 + 1;
+			int tmp2 = rand() % 5 + 1;
+			string tmp3 = "./resources/entity/mob_";
+			tmp3 += to_string(tmp1);
+			tmp3 += to_string(tmp2);
+			tmp3 += ".png";
+
+			entity[i * 8 + j] = new Entity(renderer, tmp3, Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), Rect(25 + (100 * i), 140 + (i * 65) + (120 * j), 50, 50), i*8+j+7, 1, ALLY, ENTITY_PLAYER);
 		}
 	}
 	for (int i = 1; i >= 0; i--) {
 		for (int j = 6 + (1 - i); j >= 0; j--) {
-			enemies[i * 8 + j] = new Entity(renderer, "./resources/entity/mor_11.png", Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), i * 8 + j + 22, 1, ENEMY, ENTITY_PLAYER);
+			int tmp1 = rand() % 5 + 1;
+			int tmp2 = rand() % 5 + 1;
+			string tmp3 = "./resources/entity/mor_";
+			tmp3 += to_string(tmp1);
+			tmp3 += to_string(tmp2);
+			tmp3 += ".png";
+			enemies[i * 8 + j] = new Entity(renderer,tmp3, Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), Rect(1920 - (75 + (100 * i)), 1080 - (95 + (i * 65) + (120 * j)), 50, 50), i * 8 + j + 22, 1, ENEMY, ENTITY_PLAYER);
 		}
 	}
 
@@ -238,6 +252,7 @@ int main(void) {
 				break;
 			}
 		}
+		Entity *temp;
 		for (auto it = vec_enti.begin(); it != vec_enti.end(); it++) {
 			Entity* entity = (*it);
 			
@@ -247,9 +262,14 @@ int main(void) {
 			}
 			if (entity->focused) {
 				entity->drawFocus();
-				entity->drawInfo();
+				temp = entity;
+				cnt++;
 			}
 		}
+		if (cnt == 1) {
+			temp->drawInfo("", 0);
+		}
+		cnt = 0;
 		if (is30) {
 			int size = idQ.size();
 			for (int i = 0; i < size; i++) {
